@@ -1,22 +1,53 @@
 package components.playerArea;
 
+import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 
-
+/**
+ * 
+ * @author mosek
+ *
+ */
 public class PlayerArea {
 	
-	private static JPanel panel;
+	/**
+	 * 
+	 */
+	private JPanel panel;
 	
-	public PlayerArea() {
-		initializePlayerArea();
+	/**
+	 * 
+	 * @param playerNumber
+	 * @param playerName
+	 */
+	public PlayerArea(int playerNumber, String playerName) {
+		initializePlayerArea(playerNumber, playerName);
 	}
 	
-	private static void initializePlayerArea() {	
+	/**
+	 * 
+	 * @return panel holding playerArea
+	 */
+	public JPanel getPlayerArea() {
+		return panel;
+	}
+	
+	/**
+	 * 
+	 * @param playerNumber
+	 * @param playerName
+	 */
+	private void initializePlayerArea(int playerNumber, String playerName) {	
 		panel=new JPanel();
+		JLabel name = new JLabel("Player "+ playerNumber + ": " + playerName);
+		panel.add(name);
+		
+		Border chatBorder = BorderFactory.createLineBorder(Color.black);
+		panel.setBorder(chatBorder);
 		
 	}
 	
-	
-	
-
 }

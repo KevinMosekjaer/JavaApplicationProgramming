@@ -5,23 +5,46 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+/**
+ * 
+ * @author mosek
+ *
+ */
 public class MenuBar {
 	
+	/**
+	 * 
+	 */
 	private static JMenuBar menuBar;
 	
+	/**
+	 * 
+	 */
 	private static JMenu file, game, network, language, help;
 	
+	/**
+	 * 
+	 */
 	private static JMenuItem english, french;
 	
-	
+	/**
+	 * 
+	 */
 	public MenuBar() {
 		initializeMenuBar();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public JMenuBar getMenuBar() {
 		return menuBar;
 	}
 	
+	/**
+	 * 
+	 */
 	private static void initializeMenuBar() {
 		menuBar=new JMenuBar();
 		
@@ -45,12 +68,6 @@ public class MenuBar {
 	    network.setBorder(menuBorder);
 	    language.setBorder(menuBorder);
 	    help.setBorder(menuBorder);
-	    
-	    
-				
-		GridLayout menuLayout = new GridLayout();	
-		//menuBar.setLayout(new GridLayout());
-		//menuBar.setLayout(new FlowLayout());
 				
 		menuBar.add(file);
 		menuBar.add(game);
