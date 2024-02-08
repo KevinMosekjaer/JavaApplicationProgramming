@@ -25,9 +25,12 @@ public class RunGame {
 		GameChat chat = new GameChat();
 				
 		frame.setLayout(new FlowLayout());
-		frame.setPreferredSize(new Dimension(1920,1080));		
-		frame.add(menu.getMenuBar());
+		frame.setPreferredSize(new Dimension(960,540));		
 		
+		frame.setJMenuBar(menu.getMenuBar());
+		frame.add(chat.getGameChat());
+		
+		frame.setLocationRelativeTo(null);
 		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

@@ -1,6 +1,9 @@
 package components.menuBar;
 
+import java.awt.*;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 
 public class MenuBar {
 	
@@ -33,7 +36,22 @@ public class MenuBar {
 		
 		language.add(english);
 		language.add(french);
-			
+		
+		
+		int vertical = 5, horizontal = 20;
+	    Border menuBorder = BorderFactory.createEmptyBorder(vertical, horizontal, vertical, horizontal);
+	    file.setBorder(menuBorder);
+	    game.setBorder(menuBorder);
+	    network.setBorder(menuBorder);
+	    language.setBorder(menuBorder);
+	    help.setBorder(menuBorder);
+	    
+	    
+				
+		GridLayout menuLayout = new GridLayout();	
+		//menuBar.setLayout(new GridLayout());
+		//menuBar.setLayout(new FlowLayout());
+				
 		menuBar.add(file);
 		menuBar.add(game);
 		menuBar.add(network);

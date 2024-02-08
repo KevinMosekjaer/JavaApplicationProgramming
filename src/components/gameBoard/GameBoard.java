@@ -10,8 +10,13 @@ public class GameBoard {
 		initializeGameBoard();
 	}
 	
+	public JPanel getGameBoard() {
+		return panel;
+	}
+	
 	private void initializeGameBoard() {
 		panel=new JPanel();
+		
 	}
 
 }
