@@ -37,7 +37,7 @@ public class RunGame {
 		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
 		
-		rightSide.setPreferredSize(new Dimension(300,0));
+		rightSide.setPreferredSize(new Dimension(500,0));
 	
 		MenuBar menu = new MenuBar();
 		GameTitle title = new GameTitle();
@@ -46,7 +46,8 @@ public class RunGame {
 		PlayerArea player2 = new PlayerArea(2, "Mateusz");
 		GameChat chat = new GameChat();
 				
-		frame.setPreferredSize(new Dimension(960,540));		
+		//frame.setPreferredSize(new Dimension(960,540));	
+		frame.setPreferredSize(new Dimension(1920, 1080));	
 		
 		frame.setJMenuBar(menu.getMenuBar());
 		

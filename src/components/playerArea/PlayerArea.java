@@ -2,9 +2,11 @@ package components.playerArea;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Class holding the PlayerArea component to be called into Main
@@ -14,19 +16,19 @@ import javax.swing.border.Border;
 public class PlayerArea {
 	
 	/**
-	 * JPanel holding player area component
+	 * JPanel holding player area components
 	 */
-	private JPanel panel;
+	private JPanel panel, rightSide, leftSide, playerColorPanel, namePanel, nextPanel, timerPanel, gameTimerPanel, gamesWonPanel;
 	
 	/**
-	 * JLabel for player Color
+	 * JLabels for player area components
 	 */
-	private JLabel playerColor;
+	private JLabel playerColor, next, timer, name, gameTimer, gamesWon;
 	
 	/**
-	 * 
+	 * ImageIcon for game piece color
 	 */
-	//private ImageIcon gamePiece;
+	private ImageIcon gamePiece;
 	
 	/**
 	 * Constructor for player area
@@ -55,83 +57,78 @@ public class PlayerArea {
 	 */
 	private void initializePlayerArea(int playerNumber, String playerName) {	
 		panel=new JPanel(new BorderLayout());
-		JPanel rightSide = new JPanel();
-		JPanel leftSide = new JPanel();
+		rightSide = new JPanel();
+		leftSide = new JPanel();
 		
 		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
 		
 		// JPanel for player name
-		JLabel name = new JLabel("Player "+ playerNumber + ": " + playerName);
-		JPanel namePanel = new JPanel(new BorderLayout());
+		name = new JLabel("Player "+ playerNumber + ": " + playerName);
+		name.setFont(new Font("", Font.BOLD, 20));
+		namePanel = new JPanel();
 		namePanel.add(name, BorderLayout.WEST);	
 		leftSide.add(namePanel, BorderLayout.NORTH);
 		
-	
-		JPanel nextTimer = new JPanel(new BorderLayout());
-		
-		
 		// JPanel for next move
-		JLabel next = new JLabel("Next Move:");
-		JPanel nextPanel = new JPanel(new BorderLayout());
+		next = new JLabel("Next Move:");
+		nextPanel = new JPanel(new BorderLayout());
 		nextPanel.add(next, BorderLayout.WEST);
-		//panel.add(nextPanel);
-		nextTimer.add(nextPanel, BorderLayout.NORTH);
+		nextPanel.setBorder(new EmptyBorder(5,20,5,5));
+		leftSide.add(nextPanel);
 		
 		// JPanel for player timer
-		JLabel timer = new JLabel("Turn Time Elapsed:");
-		JPanel timerPanel = new JPanel(new BorderLayout());
+		timer = new JLabel("Turn Time Elapsed:");
+		timerPanel = new JPanel(new BorderLayout());
 		timerPanel.add(timer, BorderLayout.WEST);
-		//panel.add(timerPanel, BorderLayout.CENTER);
-		nextTimer.add(timerPanel, BorderLayout.SOUTH);
-		
-		
-		leftSide.add(nextTimer, BorderLayout.CENTER);
-		
-		
-		JPanel gameTimerWon = new JPanel(new BorderLayout());
-		
+		timerPanel.setBorder(new EmptyBorder(5,20,5,5));
+		leftSide.add(timerPanel);
+
 		// JPanel for game timer
-		JLabel gameTimer = new JLabel("Game Time Elapsed:");
-		JPanel gameTimerPanel = new JPanel(new BorderLayout());
+		gameTimer = new JLabel("Game Time Elapsed:");
+		gameTimerPanel = new JPanel(new BorderLayout());
 		gameTimerPanel.add(gameTimer, BorderLayout.WEST);
-		//panel.add(gameTimerPanel);
-		gameTimerWon.add(gameTimerPanel, BorderLayout.NORTH);
+		gameTimerPanel.setBorder(new EmptyBorder(5,20,5,5));
+		leftSide.add(gameTimerPanel);
 		
 		//JPanel for games won
-		JLabel gamesWon = new JLabel("Games Won:");
-		JPanel gamesWonPanel = new JPanel(new BorderLayout());
+		gamesWon = new JLabel("Games Won:");
+		gamesWonPanel = new JPanel(new BorderLayout());
 		gamesWonPanel.add(gamesWon, BorderLayout.WEST);
-		//panel.add(gamesWonPanel, BorderLayout.SOUTH);
-		gameTimerWon.add(gamesWonPanel, BorderLayout.SOUTH);
-		
-		
-		leftSide.add(gameTimerWon, BorderLayout.SOUTH);
+		gamesWonPanel.setBorder(new EmptyBorder(5,20,5,5));
+		leftSide.add(gamesWonPanel);
 
-		
 		if(playerNumber==1) {
-			ImageIcon gamePiece = new ImageIcon(PlayerArea.class.getResource("Connect4_Only_Red.png"));
+			gamePiece = new ImageIcon(PlayerArea.class.getResource("Red_Clear.png"));			
 			playerColor = new JLabel(gamePiece);
-			JPanel pc = new JPanel();
-			pc.add(playerColor);
-			rightSide.add(pc, BorderLayout.CENTER);
+			playerColor.setText("5");
+			playerColor.setFont(new Font("", Font.BOLD, 20));
+			playerColor.setForeground(Color.WHITE);		
+			playerColor.setHorizontalTextPosition(JLabel.CENTER);
+			playerColor.setVerticalTextPosition(JLabel.CENTER);
+						
+			playerColorPanel = new JPanel(new BorderLayout());
+			playerColorPanel.add(playerColor, BorderLayout.CENTER);
+	
+			rightSide.add(playerColorPanel, BorderLayout.CENTER);
 		} else if(playerNumber==2) {
-			ImageIcon gamePiece = new ImageIcon(PlayerArea.class.getResource("Connect4_Only_Black.png"));
-			playerColor = new JLabel(gamePiece);
-			JPanel pc = new JPanel();
-			pc.add(playerColor);
-			rightSide.add(pc, BorderLayout.CENTER);
+			gamePiece = new ImageIcon(PlayerArea.class.getResource("Black_Clear.png"));
+			playerColor = new JLabel(gamePiece);			
+			playerColor.setText("3");
+			playerColor.setFont(new Font("", Font.BOLD, 20));
+			playerColor.setForeground(Color.WHITE);		
+			playerColor.setHorizontalTextPosition(JLabel.CENTER);
+			playerColor.setVerticalTextPosition(JLabel.CENTER);			
+			playerColorPanel = new JPanel(new BorderLayout());
+			playerColorPanel.add(playerColor, BorderLayout.CENTER);		
+			rightSide.add(playerColorPanel, BorderLayout.CENTER);
 		}
-
 		
 		panel.add(leftSide, BorderLayout.WEST);
 		panel.add(rightSide, BorderLayout.EAST);
-		
-		
-		
+				
 		Border chatBorder = BorderFactory.createLineBorder(Color.black);
 		panel.setBorder(chatBorder);
 		
-	}
-	
+	}	
 }

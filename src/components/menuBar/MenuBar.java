@@ -4,6 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Class holding the MenuBar component to be called into main
@@ -47,8 +48,7 @@ public class MenuBar {
 	 * Method creating the menu bar, menu options, and sub menu
 	 */
 	private static void initializeMenuBar() {
-		menuBar=new JMenuBar();
-		
+		menuBar=new JMenuBar();		
 		file = new JMenu("File");
 		game = new JMenu("Game");
 		network = new JMenu("Network");
@@ -56,14 +56,16 @@ public class MenuBar {
 		help = new JMenu("Help");
 		
 		// Sub menu options for file
-		save = new JMenuItem("Save Game");
-		load = new JMenuItem("Load Game");
+		save = new JMenuItem("Save");
+		load = new JMenuItem("Load");
+		save.setBorder(new EmptyBorder(0,2,0,30));
 		file.add(save);
 		file.add(load);
 		
 		// Sub menu for Game
-		restart = new JMenuItem("Restart Game");
-		option = new JMenuItem("Game Options");
+		restart = new JMenuItem("Restart");
+		option = new JMenuItem("Options");
+		restart.setBorder(new EmptyBorder(0,2,0,19));
 		game.add(restart);
 		game.add(option);
 		
@@ -72,6 +74,7 @@ public class MenuBar {
 		host = new JMenuItem("Host");
 		connect = new JMenuItem("Connect");
 		disconnect = new JMenuItem("Disconnect");
+		host.setBorder(new EmptyBorder(0,2,0,45));
 		network.add(host);
 		network.add(connect);
 		network.add(disconnect);
@@ -80,29 +83,28 @@ public class MenuBar {
 		english = new JMenuItem("English");
 		french = new JMenuItem("French");
 		language.add(english);
+		english.setBorder(new EmptyBorder(0,2,0,23));
 		language.add(french);
 		
 		// Sub menu for help
 		how = new JMenuItem("How to Play");
 		about = new JMenuItem("About");
+		how.setBorder(new EmptyBorder(0,2,0,0));
 		help.add(how);
 		help.add(about);
-		
-		
-		int vertical = 5, horizontal = 20;
-	    Border menuBorder = BorderFactory.createEmptyBorder(vertical, horizontal, vertical, horizontal);
-	    file.setBorder(menuBorder);
-	    game.setBorder(menuBorder);
-	    network.setBorder(menuBorder);
-	    language.setBorder(menuBorder);
-	    help.setBorder(menuBorder);
+
+		// Borders to make things more even
+		file.setBorder(new EmptyBorder(5,25,5,25));
+	    game.setBorder(new EmptyBorder(5,20,5,20));
+	    network.setBorder(new EmptyBorder(5,18,5,18));
+	    language.setBorder(new EmptyBorder(5,10,5,10));
+	    help.setBorder(new EmptyBorder(5,25,5,30));
 				
 		menuBar.add(file);
 		menuBar.add(game);
 		menuBar.add(network);
 		menuBar.add(language);
-		menuBar.add(help);
-		
+		menuBar.add(help);	
 	}
 		
 }
