@@ -13,10 +13,21 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
+/**
+ * Main class to put all of the game components together and hold main method
+ * 
+ * @author Kevin Mosekjaer
+ */
 public class RunGame {
 	
+	/**
+	 * JFrame holding all components for the program
+	 */
 	private static JFrame frame;
 	
+	/**
+	 * Function creating the game and putting the components together
+	 */
 	private static void createGame() {
 		frame=new JFrame();
 		JPanel rightSide = new JPanel();
@@ -27,7 +38,7 @@ public class RunGame {
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
 		
 		rightSide.setPreferredSize(new Dimension(300,0));
-			
+	
 		MenuBar menu = new MenuBar();
 		GameTitle title = new GameTitle();
 		GameBoard board = new GameBoard();
@@ -57,6 +68,11 @@ public class RunGame {
 		frame.setVisible(true);
 	}
 
+	/**
+	 * Main method, calling createGame method
+	 * 
+	 * @param args args
+	 */
 	public static void main(String[] args) {
 		createGame();
 	}

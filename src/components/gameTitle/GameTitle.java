@@ -2,21 +2,43 @@ package components.gameTitle;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 
+/**
+ * 
+ * 
+ * @author mosek
+ *
+ */
 public class GameTitle {
 	
+	/**
+	 * JPanel holding the game title
+	 */
 	private JPanel panel;
 	
+	/**
+	 * Constructor for game title
+	 */
 	public GameTitle() {
 		initializeGameTitle();
 	}
 	
+	/**
+	 * Getter returning the JPanel holding the game title
+	 * 
+	 * @return JPanel title
+	 */
 	public JPanel getGameTitle() {
 		return panel;
 	}
 	
+	/**
+	 * Function creating the game title component and adding to a JPanel
+	 */
 	private void initializeGameTitle() {
 		panel=new JPanel();
 		

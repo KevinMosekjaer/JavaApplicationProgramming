@@ -6,44 +6,45 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 /**
+ * Class holding the MenuBar component to be called into main
  * 
- * @author mosek
- *
+ * @author Kevin Mosekjaer
  */
 public class MenuBar {
 	
 	/**
-	 * 
+	 * Menu bar holding options
 	 */
 	private static JMenuBar menuBar;
 	
 	/**
-	 * 
+	 * Menu options
 	 */
 	private static JMenu file, game, network, language, help;
 	
 	/**
-	 * 
+	 * Sub menu options
 	 */
-	private static JMenuItem english, french;
+	private static JMenuItem english, french, host, connect, disconnect, how, about, restart, save, load, option;
 	
 	/**
-	 * 
+	 * Constructor for MenuBar
 	 */
 	public MenuBar() {
 		initializeMenuBar();
 	}
 	
 	/**
+	 * Getter for the menu bar
 	 * 
-	 * @return
+	 * @return JMenuBar menu
 	 */
 	public JMenuBar getMenuBar() {
 		return menuBar;
 	}
 	
 	/**
-	 * 
+	 * Method creating the menu bar, menu options, and sub menu
 	 */
 	private static void initializeMenuBar() {
 		menuBar=new JMenuBar();
@@ -54,11 +55,38 @@ public class MenuBar {
 		language = new JMenu("Language");
 		help = new JMenu("Help");
 		
+		// Sub menu options for file
+		save = new JMenuItem("Save Game");
+		load = new JMenuItem("Load Game");
+		file.add(save);
+		file.add(load);
+		
+		// Sub menu for Game
+		restart = new JMenuItem("Restart Game");
+		option = new JMenuItem("Game Options");
+		game.add(restart);
+		game.add(option);
+		
+
+		// Sub menu for network
+		host = new JMenuItem("Host");
+		connect = new JMenuItem("Connect");
+		disconnect = new JMenuItem("Disconnect");
+		network.add(host);
+		network.add(connect);
+		network.add(disconnect);
+		
+		// Sub menu options for language
 		english = new JMenuItem("English");
 		french = new JMenuItem("French");
-		
 		language.add(english);
 		language.add(french);
+		
+		// Sub menu for help
+		how = new JMenuItem("How to Play");
+		about = new JMenuItem("About");
+		help.add(how);
+		help.add(about);
 		
 		
 		int vertical = 5, horizontal = 20;
