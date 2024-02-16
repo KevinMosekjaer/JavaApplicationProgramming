@@ -1,9 +1,8 @@
-package components.playerArea;
+package components.playerarea;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -11,7 +10,7 @@ import javax.swing.border.EmptyBorder;
 /**
  * Class holding the PlayerArea component to be called into Main
  * 
- * @author Kevin Mosekjaer
+ * @author Kevin Mosekjaer, Matthew Gumienny
  */
 public class PlayerArea {
 	
@@ -98,23 +97,24 @@ public class PlayerArea {
 		gamesWonPanel.setBorder(new EmptyBorder(5,20,5,5));
 		leftSide.add(gamesWonPanel);
 
+		// Sets player color to red, aligns it properly
 		if(playerNumber==1) {
-			gamePiece = new ImageIcon(PlayerArea.class.getResource("Red_Clear.png"));			
+			gamePiece = new ImageIcon(PlayerArea.class.getResource("/assets/Red_Clear.png"));
 			playerColor = new JLabel(gamePiece);
 			playerColor.setText("5");
 			playerColor.setFont(new Font("", Font.BOLD, 20));
 			playerColor.setForeground(Color.WHITE);		
 			playerColor.setHorizontalTextPosition(JLabel.CENTER);
-			playerColor.setVerticalTextPosition(JLabel.CENTER);
-						
+			playerColor.setVerticalTextPosition(JLabel.CENTER);						
 			playerColorPanel = new JPanel(new BorderLayout());
-			playerColorPanel.add(playerColor, BorderLayout.CENTER);
-	
+			playerColorPanel.add(playerColor, BorderLayout.CENTER);	
 			rightSide.add(playerColorPanel, BorderLayout.CENTER);
+			
+		// Sets player color to black, aligns it properly
 		} else if(playerNumber==2) {
-			gamePiece = new ImageIcon(PlayerArea.class.getResource("Black_Clear.png"));
+			gamePiece = new ImageIcon(PlayerArea.class.getResource("/assets/Black_Clear.png"));
 			playerColor = new JLabel(gamePiece);			
-			playerColor.setText("3");
+			playerColor.setText("4");
 			playerColor.setFont(new Font("", Font.BOLD, 20));
 			playerColor.setForeground(Color.WHITE);		
 			playerColor.setHorizontalTextPosition(JLabel.CENTER);
@@ -124,11 +124,11 @@ public class PlayerArea {
 			rightSide.add(playerColorPanel, BorderLayout.CENTER);
 		}
 		
+		// Adds everything together
 		panel.add(leftSide, BorderLayout.WEST);
 		panel.add(rightSide, BorderLayout.EAST);
 				
 		Border chatBorder = BorderFactory.createLineBorder(Color.black);
-		panel.setBorder(chatBorder);
-		
+		panel.setBorder(chatBorder);	
 	}	
 }

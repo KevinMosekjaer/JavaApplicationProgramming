@@ -1,16 +1,13 @@
-package components.gameTitle;
+package components.gametitle;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 
 /**
  * Class holding the Game logo/title to be called in main
  * 
- * @author Kevin Mosekjaer
+ * @author Kevin Mosekjaer, Matthew Gumienny
  */
 public class GameTitle {
 	
@@ -50,12 +47,9 @@ public class GameTitle {
 	 */
 	private void initializeGameTitle() {
 		panel=new JPanel();		
-		logo = new ImageIcon(GameTitle.class.getResource("Connect_4_Game_Logo.png"));
+		logo = new ImageIcon(GameTitle.class.getResource("/assets/Connect4_Logo.png"));
 		label = new JLabel(logo);		
-		panel.add(label, BorderLayout.NORTH);
-				
-		Border chatBorder = BorderFactory.createLineBorder(Color.black);
-		panel.setBorder(chatBorder);
+		panel.add(label, BorderLayout.NORTH);		
+		panel.setBackground(Color.decode("#038cfc"));				
 	}
-
 }

@@ -1,15 +1,12 @@
 package components.menuBar;
 
-import java.awt.*;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 /**
  * Class holding the MenuBar component to be called into main
  * 
- * @author Kevin Mosekjaer
+ * @author Kevin Mosekjaer, Matthew Gumienny
  */
 public class MenuBar {
 	
@@ -100,11 +97,11 @@ public class MenuBar {
 	    language.setBorder(new EmptyBorder(5,10,5,10));
 	    help.setBorder(new EmptyBorder(5,25,5,30));
 				
+	    // Adds menu bar options
 		menuBar.add(file);
 		menuBar.add(game);
 		menuBar.add(network);
 		menuBar.add(language);
 		menuBar.add(help);	
-	}
-		
+	}		
 }

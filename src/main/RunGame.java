@@ -1,22 +1,18 @@
 package main;
 
 import javax.swing.*;
-
-import components.*;
-import components.gameBoard.GameBoard;
-import components.gameChat.GameChat;
-import components.gameTitle.GameTitle;
+import components.gameboard.GameBoard;
+import components.gamechat.GameChat;
+import components.gametitle.GameTitle;
 import components.menuBar.MenuBar;
-import components.playerArea.PlayerArea;
-
+import components.playerarea.PlayerArea;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 
 /**
  * Main class to put all of the game components together and hold main method
  * 
- * @author Kevin Mosekjaer
+ * @author Kevin Mosekjaer, Matthew Gumienny
  */
 public class RunGame {
 	
@@ -25,41 +21,44 @@ public class RunGame {
 	 */
 	private static JFrame frame;
 	
+	private static JPanel rightSide, leftSide, all;
+	
 	/**
 	 * Function creating the game and putting the components together
 	 */
 	private static void createGame() {
 		frame=new JFrame();
-		JPanel rightSide = new JPanel();
-		JPanel leftSide = new JPanel();
-		JPanel all = new JPanel(new BorderLayout());
+		rightSide = new JPanel();
+		leftSide = new JPanel();
+		all = new JPanel(new BorderLayout());
 		
+		// Set preferred size and orientation
 		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
-		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
-		
-		rightSide.setPreferredSize(new Dimension(300,0));
+		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));		
+		rightSide.setPreferredSize(new Dimension(500,0));
 	
+		// Calling other component constructors
 		MenuBar menu = new MenuBar();
 		GameTitle title = new GameTitle();
 		GameBoard board = new GameBoard();
 		PlayerArea player1 = new PlayerArea(1, "Kevin");
 		PlayerArea player2 = new PlayerArea(2, "Mateusz");
 		GameChat chat = new GameChat();
-				
-		frame.setPreferredSize(new Dimension(960,540));	
 		
 		frame.setJMenuBar(menu.getMenuBar());
 		
+		// Adding right side components
 		rightSide.add(player1.getPlayerArea());
 		rightSide.add(player2.getPlayerArea());
 		rightSide.add(chat.getGameChat());
 		
+		// Adding left side components
 		leftSide.add(title.getGameTitle());
 		leftSide.add(board.getGameBoard());
 		
+		// Adding it all together
 		all.add(rightSide, BorderLayout.EAST);
-		all.add(leftSide, BorderLayout.CENTER);
-		
+		all.add(leftSide, BorderLayout.CENTER);		
 		frame.add(all);
 		
 		frame.setLocationRelativeTo(null);
@@ -76,5 +75,4 @@ public class RunGame {
 	public static void main(String[] args) {
 		createGame();
 	}
-
 }
