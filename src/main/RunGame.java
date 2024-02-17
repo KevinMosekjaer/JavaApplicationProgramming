@@ -21,7 +21,15 @@ public class RunGame {
 	 */
 	private static JFrame frame;
 	
+	/**
+	 * JPanels to manage other components to help with formatting
+	 */
 	private static JPanel rightSide, leftSide, all;
+	
+	/**
+	 * ImageIcon for tab bar/game icon
+	 */
+	private static ImageIcon icon;
 	
 	/**
 	 * Function creating the game and putting the components together
@@ -31,6 +39,8 @@ public class RunGame {
 		rightSide = new JPanel();
 		leftSide = new JPanel();
 		all = new JPanel(new BorderLayout());
+		icon = new ImageIcon(RunGame.class.getResource("/assets/Connect4_Logo.png"));
+		frame.setIconImage(icon.getImage());
 		
 		// Set preferred size and orientation
 		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
@@ -60,8 +70,7 @@ public class RunGame {
 		all.add(rightSide, BorderLayout.EAST);
 		all.add(leftSide, BorderLayout.CENTER);		
 		frame.add(all);
-		
-		frame.setLocationRelativeTo(null);
+
 		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

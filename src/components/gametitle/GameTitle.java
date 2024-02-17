@@ -49,7 +49,7 @@ public class GameTitle {
 		panel=new JPanel();		
 		logo = new ImageIcon(GameTitle.class.getResource("/assets/Connect4_Logo.png"));
 		label = new JLabel(logo);		
-		panel.add(label, BorderLayout.NORTH);		
-		panel.setBackground(Color.decode("#038cfc"));				
+		panel.add(label, BorderLayout.NORTH);	
+		panel.setBackground(Color.decode("#cde3fa"));				
 	}
 }

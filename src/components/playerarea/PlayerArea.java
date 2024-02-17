@@ -124,11 +124,40 @@ public class PlayerArea {
 			rightSide.add(playerColorPanel, BorderLayout.CENTER);
 		}
 		
+		// Temp function that adds default values, when active messes up name formatting
+		tempFunction(playerNumber);
+		
 		// Adds everything together
 		panel.add(leftSide, BorderLayout.WEST);
 		panel.add(rightSide, BorderLayout.EAST);
-				
+		
 		Border chatBorder = BorderFactory.createLineBorder(Color.black);
 		panel.setBorder(chatBorder);	
 	}	
+	
+	/**
+	 * Temp function adding values to player area
+	 * 
+	 * @param playerNumber player number
+	 */
+	private void tempFunction(int playerNumber) {
+		String temp,temp2,temp3,temp4;
+		if(playerNumber == 1) {
+			temp = next.getText();
+			next.setText(temp + " Mateusz's Turn!");
+			temp2 = gameTimer.getText();
+			gameTimer.setText(temp2 + " 6:32 Minutes");
+			temp3 = gamesWon.getText();
+			gamesWon.setText(temp3 + " 5");			
+		} else if(playerNumber == 2) {
+			temp = next.getText();
+			next.setText(temp + " Mateusz's Turn!");
+			temp2 = timer.getText();
+			timer.setText(temp2 + " 23 Seconds");
+			temp3 = gameTimer.getText();
+			gameTimer.setText(temp3 + " 6:32 Minutes");
+			temp4 = gamesWon.getText();
+			gamesWon.setText(temp4 + " 3");
+		}
+	}
 }

@@ -47,14 +47,14 @@ public class GameBoard {
 	 * and calling method to create the game board
 	 */
 	private void initializeGameBoard() {
-		panel=new JPanel();			
-		empty = new ImageIcon(GameBoard.class.getResource("/assets/Empty_Large.png"));
-		black = new ImageIcon(GameBoard.class.getResource("/assets/Black_Large.png"));
-		red = new ImageIcon(GameBoard.class.getResource("/assets/Red_Large.png"));
+		panel=new JPanel();	
+		empty = new ImageIcon(GameBoard.class.getResource("/assets/clearBlue.png"));
+		black = new ImageIcon(GameBoard.class.getResource("/assets/darkBlue.png"));
+		red = new ImageIcon(GameBoard.class.getResource("/assets/redBlue.png"));
 		
 		createGameBoard();		
 		panel.add(gridPanel);
-		panel.setBackground(Color.decode("#038cfc"));
+		panel.setBackground(Color.decode("#cde3fa"));
 		
 		// temp values in game board
 		updateGrid(5,6,red);
@@ -79,7 +79,8 @@ public class GameBoard {
 		for(int i=0;i<6;i++) {
 			for(int j=0;j<7;j++) {
 				gameGrid[i][j]= new JPanel();
-				gameGrid[i][j].setBackground(Color.decode("#EEF632"));
+				//gameGrid[i][j].setBackground(Color.decode("#EEF632"));
+				gameGrid[i][j].setBackground(Color.decode("#3280F6"));
 				box = new JLabel(empty);
 				gameGrid[i][j].add(box);
 				gridPanel.add(gameGrid[i][j]);				
