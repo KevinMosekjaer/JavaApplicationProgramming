@@ -3,6 +3,8 @@ package main;
 import javax.swing.*;
 import components.gameboard.GameBoard;
 import components.gamechat.GameChat;
+import components.gamechat.GameChatController;
+import components.gamechat.GameChatModel;
 import components.gametitle.GameTitle;
 import components.menuBar.MenuBar;
 import components.playerarea.PlayerArea;
@@ -53,7 +55,10 @@ public class RunGame {
 		GameBoard board = new GameBoard();
 		PlayerArea player1 = new PlayerArea(1, "Kevin");
 		PlayerArea player2 = new PlayerArea(2, "Mateusz");
+		
 		GameChat chat = new GameChat();
+		GameChatModel chatModel = new GameChatModel();
+		GameChatController chatController = new GameChatController(chatModel, chat);
 		
 		frame.setJMenuBar(menu.getMenuBar());
 		

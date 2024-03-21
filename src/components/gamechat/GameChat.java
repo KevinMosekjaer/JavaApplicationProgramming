@@ -3,6 +3,7 @@ package components.gamechat;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 /**
  * Class holding game chat component to be called in main
@@ -14,7 +15,9 @@ public class GameChat {
 	/**
 	 * JPanels holding main panel and others for formatting
 	 */
-    private JPanel panel, top, bottom, center, chatArea;
+    private JPanel panel, top, bottom, center;//, chatArea;
+    
+    private JTextArea chatArea;
     
     /**
      * text box to write messages
@@ -73,24 +76,20 @@ public class GameChat {
         top.setBorder(underTitle);
         panel.add(top, BorderLayout.NORTH);
         
-        // Middle section
-        chatArea = new JPanel();
-        chatArea.setLayout(new BoxLayout(chatArea, BoxLayout.Y_AXIS));
         
-        // Temp messages
-        chatMessage("Hello",1);
-        chatMessage("Good Luck!",2);
-        chatMessage("No",1);
-        chatMessage("Yes!",2);
-        chatMessage("Toxic behaviour will result in a 30 day ban.",3);
-        scrollChat = new JScrollPane(chatArea);
-        scrollChat.setBorder(null);
-        center.add(scrollChat, BorderLayout.WEST);
+        // Middle section
+        chatArea = new JTextArea();
+        chatArea.setLayout(new BoxLayout(chatArea, BoxLayout.Y_AXIS));
+        chatArea.setBackground(Color.WHITE);
+        chatArea.setEditable(false);
+        center.setBackground(Color.WHITE);
+        
+        center.add(chatArea, BorderLayout.WEST);
         panel.add(center, BorderLayout.CENTER);
         
         
         // Bottom section   
-        textBox = new JTextField("Enter a message!");
+        textBox = new JTextField();
         send = new JButton("Send");       
         bottom.add(send, BorderLayout.EAST);
         bottom.add(textBox, BorderLayout.CENTER);
@@ -101,21 +100,40 @@ public class GameChat {
     }
     
     /**
-     * Method to add messages to the chat area
+     * Function to display chat messages
      * 
-     * @param message message to be added
-     * @param player who sent it
+     * @param message m
      */
-    private void chatMessage(String message, int player) {
-    	if(player == 1) {
-    		newMessage = new JLabel("Player 1: " + message);
-        	chatArea.add(newMessage);
-    	} else if(player == 2) {
-    		newMessage = new JLabel("Player 2: " + message);
-        	chatArea.add(newMessage);
-    	} else {
-    		newMessage = new JLabel("Game message: " + message);
-        	chatArea.add(newMessage);
-    	}
+    public void displayChatMessage(String message) {
+    	chatArea.append(message + "\n");
     }
+
+    /**
+     * Resets text area after sending message
+     */
+    public void resetTextArea() {
+    	textBox.setText("");
+    }
+    
+    /**
+     * Getter for message to be sent
+     * 
+     * @return message to be sent
+     */
+    public String getMessageSend() {    	
+    	return textBox.getText();
+    }
+    
+    
+    
+    /**
+     * Setting up action listener
+     * 
+     * @param e e
+     */
+    public void addChatSendListener(ActionListener e) {
+    	send.addActionListener(e);
+    }
+    
+     
 }
