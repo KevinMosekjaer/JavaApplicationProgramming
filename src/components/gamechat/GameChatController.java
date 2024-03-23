@@ -3,6 +3,8 @@ package components.gamechat;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import main.GameModel;
+
 /**
  * 
  * @author Kevin Mosekjaer
@@ -13,6 +15,7 @@ public class GameChatController {
 	 * model
 	 */
 	private GameChatModel model;
+	//private GameModel model;
 	
 	/**
 	 * view
@@ -31,6 +34,14 @@ public class GameChatController {
 		this.view.addChatSendListener(new ChatListener());
 	}
 	
+	/*
+	public GameChatController(GameModel model, GameChat view) {
+		this.model=model;
+		this.view=view;
+		this.view.addChatSendListener(new ChatListener());
+	}
+	*/
+	
 	/**
      * Getter for player number of message
      * 
@@ -39,6 +50,7 @@ public class GameChatController {
     public int getPlayerNumber() {
     	return 1;
     }
+    
 	
 	/**
 	 * CLass implementing ActionListener for the chat

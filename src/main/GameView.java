@@ -1,28 +1,22 @@
 package main;
 
-import javax.swing.*;
-import components.gameboard.GameBoard;
-import components.gamechat.GameChat;
-import components.gamechat.GameChatController;
-import components.gamechat.GameChatModel;
-import components.gametitle.GameTitle;
-import components.menuBar.MenuBar;
-import components.playerarea.PlayerArea;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-/**
- * Main class to put all of the game components together and hold main method
- * 
- * @author Kevin Mosekjaer, Matthew Gumienny
- */
-public class RunGame {
-	
-	/**
-	 * JFrame holding all components for the program
-	 */
-	private static JFrame frame;
-	
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import components.gameboard.GameBoard;
+import components.gamechat.GameChat;
+import components.gamechat.GameChatController;
+import components.gametitle.GameTitle;
+import components.menuBar.MenuBar;
+import components.playerarea.PlayerArea;
+
+public class GameView extends JFrame {
+
 	/**
 	 * JPanels to manage other components to help with formatting
 	 */
@@ -33,41 +27,38 @@ public class RunGame {
 	 */
 	private static ImageIcon icon;
 	
+	private GameChat chat;
+	
+	public GameView() {
+		initializeGame();
+	}
+	
 	/**
 	 * Function creating the game and putting the components together
 	 */
-	/*
-	private static void createGame() {
-		frame=new JFrame();
+	private void initializeGame() {
+		//frame=new JFrame();
 		rightSide = new JPanel();
 		leftSide = new JPanel();
 		all = new JPanel(new BorderLayout());
 		icon = new ImageIcon(RunGame.class.getResource("/assets/Connect4_Logo.png"));
-		frame.setIconImage(icon.getImage());
+		this.setIconImage(icon.getImage());
 		
 		// Set preferred size and orientation
 		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));		
 		rightSide.setPreferredSize(new Dimension(500,0));
 	
-		// Calling other component constructors
+		// Initialize all component views
 		MenuBar menu = new MenuBar();
 		GameTitle title = new GameTitle();
 		GameBoard board = new GameBoard();
 		PlayerArea player1 = new PlayerArea(1, "Kevin");
-		PlayerArea player2 = new PlayerArea(2, "Mateusz");
+		PlayerArea player2 = new PlayerArea(2, "Mateusz");		
+		chat = new GameChat();
 		
-		GameChat chat = new GameChat();
-		//GameChatModel chatModel = new GameChatModel();
-		GameModel model = new GameModel();
-		//GameChatController chatController = new GameChatController(chatModel, chat);
-		GameChatController chatController = new GameChatController(model, chat);
-		
-		
-		// Main controller setup
-		GameController controller = new GameController(chatController);
-		
-		frame.setJMenuBar(menu.getMenuBar());
+		// Set menu bar in JFrame
+		this.setJMenuBar(menu.getMenuBar());
 		
 		// Adding right side components
 		rightSide.add(player1.getPlayerArea());
@@ -81,28 +72,15 @@ public class RunGame {
 		// Adding it all together
 		all.add(rightSide, BorderLayout.EAST);
 		all.add(leftSide, BorderLayout.CENTER);		
-		frame.add(all);
+		this.add(all);
 
-		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
+		this.pack();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//this.setVisible(true);
 	}
-	*/
 	
-	public RunGame() {
-		
+	public GameChat getGameChat() {
+		return this.chat;
 	}
 
-	/**
-	 * Main method, calling createGame method
-	 * 
-	 * @param args args
-	 */
-	public static void main(String[] args) {
-		//createGame();
-		GameModel model = new GameModel();
-		GameView view = new GameView();
-		GameController controller = new GameController(view, model);
-		controller.start();
-	}
 }

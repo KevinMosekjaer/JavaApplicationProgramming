@@ -122,9 +122,7 @@ public class GameChat {
      */
     public String getMessageSend() {    	
     	return textBox.getText();
-    }
-    
-    
+    }   
     
     /**
      * Setting up action listener
@@ -134,6 +132,5 @@ public class GameChat {
     public void addChatSendListener(ActionListener e) {
     	send.addActionListener(e);
     }
-    
-     
+      
 }
