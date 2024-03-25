@@ -14,7 +14,9 @@ public class GameBoard {
 	/**
 	 * JPanels for game grid, grid panel, and main panel holding it together
 	 */
-	private JPanel panel, gameGrid[][], gridPanel;
+	private JPanel panel, gameGrid[][], gridPanel, buttonPanel;
+	
+	private JButton placePiece[];
 	
 	/**
 	 * JLabel to hold ImageIcons
@@ -48,24 +50,16 @@ public class GameBoard {
 	 */
 	private void initializeGameBoard() {
 		panel=new JPanel();	
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		empty = new ImageIcon(GameBoard.class.getResource("/assets/clearBlue.png"));
 		black = new ImageIcon(GameBoard.class.getResource("/assets/darkBlue.png"));
 		red = new ImageIcon(GameBoard.class.getResource("/assets/redBlue.png"));
 		
-		createGameBoard();		
+		createGameBoard();	
+		createGameButtons();
 		panel.add(gridPanel);
 		panel.setBackground(Color.decode("#cde3fa"));
 		
-		// temp values in game board
-		updateGrid(5,6,red);
-		updateGrid(5,5,black);
-		updateGrid(4,5,red);
-		updateGrid(5,3,red);
-		updateGrid(5,0,red);
-		updateGrid(5,2,red);
-		updateGrid(5,4,black);
-		updateGrid(4,3,black);
-		updateGrid(5,1,black);
 	}
 	
 	/**
@@ -89,12 +83,28 @@ public class GameBoard {
 	}
 	
 	/**
+	 * Function to create buttons above game board for placing pieces
+	 */
+	private void createGameButtons() {
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 7)); 
+        placePiece = new JButton[7]; 
+
+        for (int i = 0; i < 7; i++) {
+            JButton button = new JButton("\u2B07"); 
+            placePiece[i] = button;
+            buttonPanel.add(button);
+        }
+        panel.add(buttonPanel); 
+    }
+	
+	/**
 	 * Method to update grid with values 
 	 * 
 	 * @param row row of game piece to be placed
 	 * @param column column of game piece to be placed
 	 * @param color color of player
 	 */
+	/*
 	private void updateGrid(int row, int column, ImageIcon color) {
 		// Checks if you are able to place item in that section, sets player color if true
 		if(((JLabel) gameGrid[row][column].getComponent(0)).getIcon()==empty) {
@@ -103,5 +113,27 @@ public class GameBoard {
 		} else {
 			JOptionPane.showMessageDialog(panel, "Unable to place in this column");
 		}
+	}
+	*/
+	
+	public void updateGrid(int[][] gridState, int currentPlayer) {
+	    for (int row = 0; row < GameBoardModel.ROWS; row++) {
+	        for (int col = 0; col < GameBoardModel.COLS; col++) {
+	            ImageIcon icon = switch (gridState[row][col]) {
+	                case 1 -> red;
+	                case 2 -> black;
+	                default -> empty;
+	            };
+	            ((JLabel) gameGrid[row][col].getComponent(0)).setIcon(icon);
+	        }
+	    }
+	}
+	
+	public void showWinner(int playerNumber) {
+        JOptionPane.showMessageDialog(panel, "Player " + playerNumber + " wins!");
+    }
+	
+	public JButton getPlacePieceButton(int index) {
+	    return placePiece[index];
 	}
 }

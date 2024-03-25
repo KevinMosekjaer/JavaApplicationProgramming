@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
@@ -29,6 +30,10 @@ public class GameView extends JFrame {
 	
 	private GameChat chat;
 	
+	private GameBoard board;
+	
+	private PlayerArea player1, player2;
+	
 	public GameView() {
 		initializeGame();
 	}
@@ -52,9 +57,9 @@ public class GameView extends JFrame {
 		// Initialize all component views
 		MenuBar menu = new MenuBar();
 		GameTitle title = new GameTitle();
-		GameBoard board = new GameBoard();
-		PlayerArea player1 = new PlayerArea(1, "Kevin");
-		PlayerArea player2 = new PlayerArea(2, "Mateusz");		
+		board = new GameBoard();
+		player1 = new PlayerArea(1, "");
+		player2 = new PlayerArea(2, "");		
 		chat = new GameChat();
 		
 		// Set menu bar in JFrame
@@ -82,5 +87,16 @@ public class GameView extends JFrame {
 	public GameChat getGameChat() {
 		return this.chat;
 	}
-
+	
+	public GameBoard getGameBoard() {
+		return this.board;
+	}
+	
+	public PlayerArea getPlayerArea(int playerNumber) {
+		if(playerNumber == 1) {
+			return this.player1;
+		} else {
+			return this.player2;
+		}
+	}
 }

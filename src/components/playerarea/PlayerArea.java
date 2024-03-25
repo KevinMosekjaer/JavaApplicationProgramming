@@ -2,10 +2,14 @@ package components.playerarea;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
+import java.awt.Insets;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.StyleConstants;
 
 /**
  * Class holding the PlayerArea component to be called into Main
@@ -22,7 +26,15 @@ public class PlayerArea {
 	/**
 	 * JLabels for player area components
 	 */
-	private JLabel playerColor, next, timer, name, gameTimer, gamesWon;
+	private JLabel playerColor, name;//, next, timer, name, gameTimer, gamesWon;
+	
+	private JTextArea nextSection, timerSection, gameTimerSection, gamesWonSection;
+	
+	private JTextArea next, timer, gameTimer, gamesWon;
+	
+	int playerNumber;
+	
+	String playerName;
 	
 	/**
 	 * ImageIcon for game piece color
@@ -36,6 +48,8 @@ public class PlayerArea {
 	 * @param playerName name of player
 	 */
 	public PlayerArea(int playerNumber, String playerName) {
+		this.playerNumber = playerNumber;
+		this.playerName = playerName;
 		initializePlayerArea(playerNumber, playerName);
 	}
 	
@@ -58,106 +72,124 @@ public class PlayerArea {
 		panel=new JPanel(new BorderLayout());
 		rightSide = new JPanel();
 		leftSide = new JPanel();
+		//rightSide.setBackground(Color.WHITE);
+		//leftSide.setBackground(Color.WHITE);
 		
 		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
 		
-		// JPanel for player name
-		name = new JLabel("Player "+ playerNumber + ": " + playerName);
-		name.setFont(new Font("", Font.BOLD, 20));
-		namePanel = new JPanel();
-		namePanel.add(name, BorderLayout.WEST);	
-		leftSide.add(namePanel, BorderLayout.NORTH);
+		name = new JLabel("Player " + playerNumber + ": " + playerName);
+        name.setFont(new Font("", Font.BOLD, 20));
+        namePanel = new JPanel();
+        namePanel.add(name, BorderLayout.WEST);
+        namePanel.setBackground(Color.WHITE); // color
+        leftSide.add(namePanel, BorderLayout.NORTH);
 		
-		// JPanel for next move
-		next = new JLabel("Next Move:");
-		nextPanel = new JPanel(new BorderLayout());
-		nextPanel.add(next, BorderLayout.WEST);
-		nextPanel.setBorder(new EmptyBorder(5,20,5,5));
-		leftSide.add(nextPanel);
-		
-		// JPanel for player timer
-		timer = new JLabel("Turn Time Elapsed:");
-		timerPanel = new JPanel(new BorderLayout());
-		timerPanel.add(timer, BorderLayout.WEST);
-		timerPanel.setBorder(new EmptyBorder(5,20,5,5));
-		leftSide.add(timerPanel);
+        /*
+		next = setupPlayerAreaSection("Next Move: ");
+        timer = setupPlayerAreaSection("Turn Time Elapsed: ");
+        gameTimer = setupPlayerAreaSection("Game Time Elapsed: ");
+        gamesWon = setupPlayerAreaSection("Games Won: ");
+        */
+        
+        nextSection = setupPlayerAreaSection("Next Move: ");
+        timerSection = setupPlayerAreaSection("Turn Time Elapsed: ");
+        timerSection.setText("00:00");
+        gameTimerSection = setupPlayerAreaSection("Game Time Elapsed: ");
+        gameTimerSection.setText("00:00");
+        gamesWonSection = setupPlayerAreaSection("Games Won: ");
+        
+        setupPlayerColorSection(playerNumber);
 
-		// JPanel for game timer
-		gameTimer = new JLabel("Game Time Elapsed:");
-		gameTimerPanel = new JPanel(new BorderLayout());
-		gameTimerPanel.add(gameTimer, BorderLayout.WEST);
-		gameTimerPanel.setBorder(new EmptyBorder(5,20,5,5));
-		leftSide.add(gameTimerPanel);
-		
-		//JPanel for games won
-		gamesWon = new JLabel("Games Won:");
-		gamesWonPanel = new JPanel(new BorderLayout());
-		gamesWonPanel.add(gamesWon, BorderLayout.WEST);
-		gamesWonPanel.setBorder(new EmptyBorder(5,20,5,5));
-		leftSide.add(gamesWonPanel);
-
-		// Sets player color to red, aligns it properly
-		if(playerNumber==1) {
-			gamePiece = new ImageIcon(PlayerArea.class.getResource("/assets/Red_Clear.png"));
-			playerColor = new JLabel(gamePiece);
-			playerColor.setText("5");
-			playerColor.setFont(new Font("", Font.BOLD, 20));
-			playerColor.setForeground(Color.WHITE);		
-			playerColor.setHorizontalTextPosition(JLabel.CENTER);
-			playerColor.setVerticalTextPosition(JLabel.CENTER);						
-			playerColorPanel = new JPanel(new BorderLayout());
-			playerColorPanel.add(playerColor, BorderLayout.CENTER);	
-			rightSide.add(playerColorPanel, BorderLayout.CENTER);
-			
-		// Sets player color to black, aligns it properly
-		} else if(playerNumber==2) {
-			gamePiece = new ImageIcon(PlayerArea.class.getResource("/assets/Black_Clear.png"));
-			playerColor = new JLabel(gamePiece);			
-			playerColor.setText("4");
-			playerColor.setFont(new Font("", Font.BOLD, 20));
-			playerColor.setForeground(Color.WHITE);		
-			playerColor.setHorizontalTextPosition(JLabel.CENTER);
-			playerColor.setVerticalTextPosition(JLabel.CENTER);			
-			playerColorPanel = new JPanel(new BorderLayout());
-			playerColorPanel.add(playerColor, BorderLayout.CENTER);		
-			rightSide.add(playerColorPanel, BorderLayout.CENTER);
-		}
-		
-		// Temp function that adds default values, when active messes up name formatting
-		tempFunction(playerNumber);
 		
 		// Adds everything together
 		panel.add(leftSide, BorderLayout.WEST);
 		panel.add(rightSide, BorderLayout.EAST);
 		
 		Border chatBorder = BorderFactory.createLineBorder(Color.black);
-		panel.setBorder(chatBorder);	
+		panel.setBorder(chatBorder);
+		panel.setBackground(Color.WHITE); // color
 	}	
 	
-	/**
-	 * Temp function adding values to player area
-	 * 
-	 * @param playerNumber player number
-	 */
-	private void tempFunction(int playerNumber) {
-		String temp,temp2,temp3,temp4;
-		if(playerNumber == 1) {
-			temp = next.getText();
-			next.setText(temp + " Mateusz's Turn!");
-			temp2 = gameTimer.getText();
-			gameTimer.setText(temp2 + " 6:32 Minutes");
-			temp3 = gamesWon.getText();
-			gamesWon.setText(temp3 + " 5");			
-		} else if(playerNumber == 2) {
-			temp = next.getText();
-			next.setText(temp + " Mateusz's Turn!");
-			temp2 = timer.getText();
-			timer.setText(temp2 + " 23 Seconds");
-			temp3 = gameTimer.getText();
-			gameTimer.setText(temp3 + " 6:32 Minutes");
-			temp4 = gamesWon.getText();
-			gamesWon.setText(temp4 + " 3");
-		}
+	/*
+	private JTextArea setupPlayerAreaSection(String title) {
+        JTextArea textArea = new JTextArea(title);
+        textArea.setEditable(false);
+        textArea.setFocusable(false);
+        textArea.setBackground(new Color(0, 0, 0, 0)); // Making background transparent
+        textArea.setBorder(BorderFactory.createEmptyBorder());
+        textArea.setFont(new Font("", Font.PLAIN, 14));
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(textArea, BorderLayout.WEST);
+        panel.setBorder(new EmptyBorder(5, 20, 5, 5));
+        leftSide.add(panel);
+
+        return textArea;
+    }
+    */
+	
+	private JTextArea setupPlayerAreaSection(String title) {
+	    JLabel titleLabel = new JLabel(title);
+	    titleLabel.setFont(new Font("", Font.BOLD, 14));
+	    //titleLabel.setBackground(Color.WHITE);
+	    JTextArea text = new JTextArea();
+	    text.setEditable(false);
+	    text.setFocusable(false);
+	    text.setBackground(Color.WHITE); // color
+	    JPanel sectionPanel = new JPanel();
+	    sectionPanel.add(titleLabel);
+	    sectionPanel.add(text);
+	    sectionPanel.setBackground(Color.WHITE); // color
+	    leftSide.add(sectionPanel, BorderLayout.WEST);
+	    return text; 
 	}
+	
+	private void setupPlayerColorSection(int playerNumber) {
+        String colorPath = playerNumber == 1 ? "/assets/Red_Clear.png" : "/assets/Black_Clear.png";
+        gamePiece = new ImageIcon(PlayerArea.class.getResource(colorPath));
+        
+        playerColor = new JLabel(gamePiece);
+        //String piecesPlaced = playerNumber == 1 ? "5" : "4";
+        //playerColor.setText(piecesPlaced);
+        playerColor.setText("0");
+        playerColor.setFont(new Font("", Font.BOLD, 20));
+        playerColor.setForeground(Color.WHITE);        
+        playerColor.setHorizontalTextPosition(JLabel.CENTER);
+        playerColor.setVerticalTextPosition(JLabel.CENTER);
+        
+        playerColorPanel = new JPanel(new BorderLayout());
+        playerColorPanel.add(playerColor, BorderLayout.CENTER); 
+        playerColorPanel.setBackground(Color.WHITE); // color
+        rightSide.add(playerColorPanel, BorderLayout.CENTER);
+    }
+	
+	public void setPlayerName(int playerNumber, String playerName) {
+        name.setText("Player " + playerNumber + ": " + playerName);
+    }
+	
+	public void updateNextMove(String playerName) {
+	    nextSection.setText(playerName);
+	}
+
+	public void updateGameTimer(String time) {
+	    gameTimerSection.setText(time);
+	}
+	
+	public void initialTimerSetText(JTextArea text, String time) {
+		text.setText(time);
+	}
+
+	public void updateTurnTimer(String time) {
+	    timerSection.setText(time);
+	}
+
+	public void updateGamesWon(int won) {
+	    gamesWonSection.setText("" + won);
+	}
+	
+	public void updatePiecesPlaced(int pieces) {
+		
+	}
+	
 }
