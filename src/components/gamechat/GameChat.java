@@ -15,8 +15,11 @@ public class GameChat {
 	/**
 	 * JPanels holding main panel and others for formatting
 	 */
-    private JPanel panel, top, bottom, center;//, chatArea;
+    private JPanel panel, top, bottom, center;
     
+    /**
+     * JTextARea for chat
+     */
     private JTextArea chatArea;
     
     /**

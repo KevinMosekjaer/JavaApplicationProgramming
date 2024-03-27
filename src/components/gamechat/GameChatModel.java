@@ -14,6 +14,11 @@ public class GameChatModel {
 	private LinkedList<String> messages = new LinkedList<>();
 	
 	/**
+	 * Player number
+	 */
+	private int playerNumber = 1;
+	
+	/**
 	 * Constructor
 	 */
 	public GameChatModel() {
@@ -32,10 +37,26 @@ public class GameChatModel {
 	/**
 	 * Function to get last element, ie. message from LL
 	 * 
-	 * @return message
+	 * @return message m
 	 */
 	public String getMessage() {
 		return messages.getLast();
+	}
+	
+	/**
+	 * Setter for player number
+	 * @param playerNumber n
+	 */
+	public void setPlayerNumber(int playerNumber) {
+		this.playerNumber = playerNumber;
+	}
+	
+	/**
+	 * Getter for player number
+	 * @return num
+	 */
+	public int getPlayerNumber() {
+		return playerNumber;
 	}
 
 }

@@ -3,19 +3,18 @@ package components.gamechat;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import main.GameModel;
+import main.Observer;
 
 /**
  * 
  * @author Kevin Mosekjaer
  */
-public class GameChatController {
+public class GameChatController implements Observer {
 	
 	/**
 	 * model
 	 */
 	private GameChatModel model;
-	//private GameModel model;
 	
 	/**
 	 * view
@@ -33,41 +32,51 @@ public class GameChatController {
 		this.view=view;
 		this.view.addChatSendListener(new ChatListener());
 	}
-	
-	/*
-	public GameChatController(GameModel model, GameChat view) {
-		this.model=model;
-		this.view=view;
-		this.view.addChatSendListener(new ChatListener());
-	}
-	*/
-	
-	/**
-     * Getter for player number of message
-     * 
-     * @return player number
-     */
-    public int getPlayerNumber() {
-    	return 1;
-    }
-    
-	
+
 	/**
 	 * CLass implementing ActionListener for the chat
 	 * 
 	 * @author Kevin Mosekjaer
 	 */
 	class ChatListener implements ActionListener {
+		
+		/**
+		 * 
+		 */
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 	        String message = view.getMessageSend();
 	        if (!message.isEmpty()) {
-	            int player = getPlayerNumber();
+	            int player = model.getPlayerNumber();
 	            model.addMessage("Player " + player + ": " + message); 
 	            view.displayChatMessage(model.getMessage()); 
 	            view.resetTextArea();
 	        }
 	    }
 	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public void changeTurn(int currentPlayer) {
+		boolean currentPlayerTurn = this.model.getPlayerNumber() == currentPlayer;
+		if(currentPlayerTurn == true) {
+			model.setPlayerNumber(1);
+		} else {
+			model.setPlayerNumber(2);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public void gameFinished(int playerNumber) {
+		model.addMessage("Game Message: Player " + playerNumber + " Wins!");
+		view.displayChatMessage(model.getMessage()); 
+        view.resetTextArea();		
+	} 
+	
 }
 

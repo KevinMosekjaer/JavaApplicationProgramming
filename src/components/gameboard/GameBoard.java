@@ -2,6 +2,8 @@ package components.gameboard;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 /**
@@ -16,7 +18,10 @@ public class GameBoard {
 	 */
 	private JPanel panel, gameGrid[][], gridPanel, buttonPanel;
 	
-	private JButton placePiece[];
+	/**
+	 * 
+	 */
+	private JButton placePiece[], button;
 	
 	/**
 	 * JLabel to hold ImageIcons
@@ -53,8 +58,7 @@ public class GameBoard {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		empty = new ImageIcon(GameBoard.class.getResource("/assets/clearBlue.png"));
 		black = new ImageIcon(GameBoard.class.getResource("/assets/darkBlue.png"));
-		red = new ImageIcon(GameBoard.class.getResource("/assets/redBlue.png"));
-		
+		red = new ImageIcon(GameBoard.class.getResource("/assets/redBlue.png"));		
 		createGameBoard();	
 		createGameButtons();
 		panel.add(gridPanel);
@@ -73,7 +77,6 @@ public class GameBoard {
 		for(int i=0;i<6;i++) {
 			for(int j=0;j<7;j++) {
 				gameGrid[i][j]= new JPanel();
-				//gameGrid[i][j].setBackground(Color.decode("#EEF632"));
 				gameGrid[i][j].setBackground(Color.decode("#3280F6"));
 				box = new JLabel(empty);
 				gameGrid[i][j].add(box);
@@ -83,14 +86,14 @@ public class GameBoard {
 	}
 	
 	/**
-	 * Function to create buttons above game board for placing pieces
+	 * 
 	 */
 	private void createGameButtons() {
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 7)); 
+        buttonPanel = new JPanel(new GridLayout(1, 7)); 
         placePiece = new JButton[7]; 
 
         for (int i = 0; i < 7; i++) {
-            JButton button = new JButton("\u2B07"); 
+            button = new JButton("\u2B07"); 
             placePiece[i] = button;
             buttonPanel.add(button);
         }
@@ -98,42 +101,58 @@ public class GameBoard {
     }
 	
 	/**
-	 * Method to update grid with values 
 	 * 
-	 * @param row row of game piece to be placed
-	 * @param column column of game piece to be placed
-	 * @param color color of player
 	 */
-	/*
-	private void updateGrid(int row, int column, ImageIcon color) {
-		// Checks if you are able to place item in that section, sets player color if true
-		if(((JLabel) gameGrid[row][column].getComponent(0)).getIcon()==empty) {
-			((JLabel) gameGrid[row][column].getComponent(0)).setIcon(color);
-		// Error popup
-		} else {
-			JOptionPane.showMessageDialog(panel, "Unable to place in this column");
-		}
-	}
-	*/
-	
-	public void updateGrid(int[][] gridState, int currentPlayer) {
-	    for (int row = 0; row < GameBoardModel.ROWS; row++) {
-	        for (int col = 0; col < GameBoardModel.COLS; col++) {
-	            ImageIcon icon = switch (gridState[row][col]) {
-	                case 1 -> red;
-	                case 2 -> black;
-	                default -> empty;
-	            };
-	            ((JLabel) gameGrid[row][col].getComponent(0)).setIcon(icon);
+	public void resetGameBoard() {
+	    for (int i = 0; i < 6; i++) {
+	        for (int j = 0; j < 7; j++) {
+	            ((JLabel) gameGrid[i][j].getComponent(0)).setIcon(empty);
 	        }
 	    }
 	}
-	
-	public void showWinner(int playerNumber) {
-        JOptionPane.showMessageDialog(panel, "Player " + playerNumber + " wins!");
-    }
-	
-	public JButton getPlacePieceButton(int index) {
-	    return placePiece[index];
+
+	/**
+	 * 
+	 * @param row
+	 * @param col
+	 * @param player
+	 */
+	public void updateGridIcon(int row, int col, int player) {
+	    ImageIcon icon = switch (player) {
+	        case 1 -> red;
+	        case 2 -> black;
+	        default -> empty;
+	    };
+	    ((JLabel)gameGrid[row][col].getComponent(0)).setIcon(icon);
 	}
+
+	/**
+	 * 
+	 * @param playerNumber
+	 * @return
+	 */
+	public boolean displayWinner(int playerNumber) {
+		int restart = JOptionPane.showConfirmDialog(panel, "Player " + playerNumber + " wins!" + " Do you want to play again?", "Confirm", JOptionPane.YES_NO_OPTION);
+		return restart == JOptionPane.YES_OPTION;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean playAgain() {
+		int restart = JOptionPane.showConfirmDialog(panel, "Do you want to play again?", "Confirm", JOptionPane.YES_NO_OPTION);
+		return restart == JOptionPane.YES_OPTION;
+	}
+	
+	/**
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public JButton getPlacePieceButton(int index) {
+		return placePiece[index];
+	}	
+	
 }
+

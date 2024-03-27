@@ -1,4 +1,4 @@
-package components.menuBar;
+package components.menubar;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
