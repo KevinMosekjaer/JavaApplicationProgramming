@@ -1,0 +1,16 @@
+src\main\GameView.java:23: warning: [serial] serializable class GameView has no definition of serialVersionUID
+public class GameView extends JFrame {
+       ^
+src\components\menubar\MenuBar.java:53: warning: [rawtypes] found raw type: JComboBox
+	private static JComboBox hostPortSelection, connectPortSelection;
+	               ^
+  missing type arguments for generic class JComboBox<E>
+  where E is a type-variable:
+    E extends Object declared in class JComboBox
+src\components\menubar\MenuBar.java:53: warning: [rawtypes] found raw type: JComboBox
+	private static JComboBox hostPortSelection, connectPortSelection;
+	               ^
+  missing type arguments for generic class JComboBox<E>
+  where E is a type-variable:
+    E extends Object declared in class JComboBox
+3 warnings

@@ -2,50 +2,60 @@ package components.playerarea;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Font;
-import javax.swing.*;
+import java.util.ResourceBundle;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 /**
  * Class holding the PlayerArea component to be called into Main
- * 
- * @author Kevin Mosekjaer, Matthew Gumienny
+ *
+ * @author Kevin Mosekjaer
  */
 public class PlayerArea {
-	
+
 	/**
 	 * JPanel holding player area components
 	 */
-	private JPanel panel, rightSide, leftSide, playerColorPanel, namePanel, nextPanel, timerPanel, gameTimerPanel, gamesWonPanel;
-	
+	private JPanel panel, rightSide, leftSide, playerColorPanel, namePanel;
+
 	/**
 	 * JLabels for player area components
 	 */
-	private JLabel playerColor, name;//, next, timer, name, gameTimer, gamesWon;
-	
+	private JLabel playerColor, name,titleLabel;
+
 	/**
-	 * 
+	 * text section
 	 */
 	private JTextArea nextSection, timerSection, gameTimerSection, gamesWonSection;
-	
+
 	/**
-	 * 
+	 * player number
 	 */
-	int playerNumber;
-	
+	private int playerNumber;
+
 	/**
-	 * 
+	 * player name
 	 */
-	String playerName;
-	
+	private String playerName;
+
 	/**
 	 * ImageIcon for game piece color
 	 */
 	private ImageIcon gamePiece;
-	
+
+
 	/**
 	 * Constructor for player area
-	 * 
+	 *
 	 * @param playerNumber player number
 	 * @param playerName name of player
 	 */
@@ -54,164 +64,168 @@ public class PlayerArea {
 		this.playerName = playerName;
 		initializePlayerArea(playerNumber, playerName);
 	}
-	
+
 	/**
 	 * Getter for JPanel holding player area component
-	 * 
+	 *
 	 * @return panel holding playerArea
 	 */
 	public JPanel getPlayerArea() {
 		return panel;
 	}
-	
+
 	/**
 	 * Method initializing the player area component into the JPanel
-	 * 
-	 * @param playerNumber
-	 * @param playerName
+	 *
+	 * @param playerNumber num
+	 * @param playerName name
 	 */
-	private void initializePlayerArea(int playerNumber, String playerName) {	
+	private void initializePlayerArea(int playerNumber, String playerName) {
 		panel=new JPanel(new BorderLayout());
 		rightSide = new JPanel();
 		leftSide = new JPanel();
-		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
-		
+		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
+
+
 		name = new JLabel("Player " + playerNumber + ": " + playerName);
-        name.setFont(new Font("", Font.BOLD, 20));
-        namePanel = new JPanel();
-        namePanel.add(name, BorderLayout.WEST);
-        namePanel.setBackground(Color.WHITE); // color
-        leftSide.add(namePanel, BorderLayout.NORTH);
-		
+		name.setFont(new Font("", Font.BOLD, 20));
+		namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		namePanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+		namePanel.add(name);
+		namePanel.setBackground(Color.WHITE); 
+		leftSide.add(namePanel, BorderLayout.NORTH);
 
-        nextSection = setupPlayerAreaSection("Next Move: ");
-        timerSection = setupPlayerAreaSection("Turn Time Elapsed: ");
-        timerSection.setText("00:00");
-        gameTimerSection = setupPlayerAreaSection("Game Time Elapsed: ");
-        gameTimerSection.setText("00:00");
-        gamesWonSection = setupPlayerAreaSection("Games Won: ");
-        
-        setupPlayerColorSection(playerNumber);
+		nextSection = setupPlayerAreaSection("Next Move: ");
+		timerSection = setupPlayerAreaSection("Turn Time Elapsed: ");
+		timerSection.setText("00:00");
+		gameTimerSection = setupPlayerAreaSection("Game Time Elapsed: ");
+		gameTimerSection.setText("00:00");
+		gamesWonSection = setupPlayerAreaSection("Games Won: ");
 
-		
+		setupPlayerColorSection(playerNumber);
+
+
 		// Adds everything together
 		panel.add(leftSide, BorderLayout.WEST);
 		panel.add(rightSide, BorderLayout.EAST);
-		
+
 		Border chatBorder = BorderFactory.createLineBorder(Color.black);
 		panel.setBorder(chatBorder);
-		panel.setBackground(Color.WHITE); // color
-	}	
-	
-	/**
-	 * 
-	 * @param title
-	 * @return
-	 */
-	private JTextArea setupPlayerAreaSection(String title) {
-	    JLabel titleLabel = new JLabel(title);
-	    titleLabel.setFont(new Font("", Font.BOLD, 14));
-	    JTextArea text = new JTextArea();
-	    text.setEditable(false);
-	    text.setFocusable(false);
-	    text.setBackground(Color.WHITE); // color
-	    JPanel sectionPanel = new JPanel();
-	    sectionPanel.add(titleLabel, BorderLayout.WEST);
-	    sectionPanel.add(text, BorderLayout.WEST);
-	    sectionPanel.setBackground(Color.WHITE); // color
-	    leftSide.add(sectionPanel, BorderLayout.WEST);
-	    return text; 
-	}
-	
-	/**
-	 * 
-	 * @param playerNumber
-	 */
-	private void setupPlayerColorSection(int playerNumber) {
-        String colorPath = playerNumber == 1 ? "/assets/Red_Clear.png" : "/assets/Black_Clear.png";
-        gamePiece = new ImageIcon(PlayerArea.class.getResource(colorPath));
-        
-        playerColor = new JLabel(gamePiece);
-        playerColor.setText("0");
-        playerColor.setFont(new Font("", Font.BOLD, 20));
-        playerColor.setForeground(Color.WHITE);        
-        playerColor.setHorizontalTextPosition(JLabel.CENTER);
-        playerColor.setVerticalTextPosition(JLabel.CENTER);
-        
-        playerColorPanel = new JPanel(new BorderLayout());
-        playerColorPanel.add(playerColor, BorderLayout.CENTER); 
-        playerColorPanel.setBackground(Color.WHITE); // color
-        rightSide.add(playerColorPanel, BorderLayout.CENTER);
-    }
-	
-	/**
-	 * 
-	 * @param playerNumber
-	 * @param playerName
-	 */
-	public void setPlayerName(int playerNumber, String playerName) {
-        name.setText("Player " + playerNumber + ": " + playerName);
-    }
-	
-	/**
-	 * 
-	 * @param playerName
-	 */
-	public void updateNextMove(String playerName) {
-	    nextSection.setText(playerName);
+		panel.setBackground(Color.WHITE); 
 	}
 
 	/**
-	 * 
-	 * @param time
+	 * Sets up player area text section
+	 * @param title title
+	 * @return text
+	 */
+	private JTextArea setupPlayerAreaSection(String title) {
+		titleLabel = new JLabel();
+		titleLabel.setText(title);
+		titleLabel.setFont(new Font("", Font.BOLD, 14));
+		JTextArea text = new JTextArea(); 
+		text.setEditable(false);
+		text.setFocusable(false);
+		text.setBackground(Color.WHITE); 
+		JPanel sectionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		sectionPanel.add(titleLabel);
+		sectionPanel.add(text); 
+		sectionPanel.setBackground(Color.WHITE);
+		sectionPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT); 
+		leftSide.add(sectionPanel); 
+		return text;
+	}
+
+
+	/**
+	 * Sets up player color section
+	 * @param playerNumber num
+	 */
+	private void setupPlayerColorSection(int playerNumber) {
+		String colorPath = playerNumber == 1 ? "/assets/Red_Clear.png" : "/assets/Black_Clear.png";
+		gamePiece = new ImageIcon(PlayerArea.class.getResource(colorPath));
+		playerColor = new JLabel(gamePiece);
+		playerColor.setText("0");
+		playerColor.setFont(new Font("", Font.BOLD, 20));
+		playerColor.setForeground(Color.WHITE);
+		playerColor.setHorizontalTextPosition(SwingConstants.CENTER);
+		playerColor.setVerticalTextPosition(SwingConstants.CENTER);
+		playerColorPanel = new JPanel(new BorderLayout());
+		playerColorPanel.add(playerColor);
+		playerColorPanel.setBackground(Color.WHITE); // color
+		rightSide.add(playerColorPanel);
+	}
+
+	/**
+	 * Sets player name
+	 * @param playerNumber num
+	 * @param playerName name
+	 */
+	public void setPlayerName(int playerNumber, String playerName) {
+		name.setText("Player " + playerNumber + ": " + playerName);
+	}
+
+	/**
+	 * Updates next move
+	 * @param playerName name
+	 */
+	public void updateNextMove(String playerName) {
+		nextSection.setText(playerName);
+	}
+
+	/**
+	 * Updates game timer
+	 * @param time t
 	 */
 	public void updateGameTimer(String time) {
-	    gameTimerSection.setText(time);
+		gameTimerSection.setText(time);
 	}
-	
+
 	/**
-	 * 
-	 * @param text
-	 * @param time
+	 * Set initial time
+	 * @param text te
+	 * @param time ti
 	 */
 	public void initialTimerSetText(JTextArea text, String time) {
 		text.setText(time);
 	}
-	
-	
-	/*
-	public void updateGameTimer(String time) {
-		gameTimerSection.setText("Game Time Elapsed: " + time);
-	}
-	
-	public void initialTimerSetText(JTextArea text, String time) {
-		timerSection.setText("Turn Time Elapsed: " + time);
-	}
-	*/
 
 	/**
-	 * 
-	 * @param time
+	 * updates turn timer
+	 * @param time t
 	 */
 	public void updateTurnTimer(String time) {
-	    timerSection.setText(time);
+		timerSection.setText(time);
 	}
 
 	/**
-	 * 
-	 * @param won
+	 * updates games won
+	 * @param won w
 	 */
 	public void updateGamesWon(int won) {
-	    gamesWonSection.setText("" + won);
+		gamesWonSection.setText("" + won);
 	}
-	
+
 	/**
-	 * 
-	 * @param pieces
+	 * updates pieces placed
+	 * @param pieces p
 	 */
 	public void updatePiecesPlaced(int pieces) {
 		playerColor.setText("" + pieces);
 	}
+
+	/**
+	 * Function to update labels
+	 * @param bundle b
+	 */
+	public void updatePlayerLabels(ResourceBundle bundle) {
+		nextSection.setText(bundle.getString("next"));
+		timerSection.setText(bundle.getString("turnTime"));
+		gameTimerSection.setText(bundle.getString("gameTime"));
+		gamesWonSection.setText(bundle.getString("gamesWon"));
+		name.setText(bundle.getString("player") + ": " + playerNumber);
+	}
+
 
 }

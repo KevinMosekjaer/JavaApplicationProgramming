@@ -18,7 +18,7 @@ CLS
 SET SRCDIR=src
 SET BINDIR=bin
 SET BINERR=labs-javac.err
-SET JARNAME=JAPLab12.jar
+SET JARNAME=JAPLab32.jar
 SET JAROUT=labs-jar.out
 SET JARERR=labs-jar.err
 SET DOCDIR=doc
