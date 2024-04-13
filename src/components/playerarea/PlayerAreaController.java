@@ -3,16 +3,17 @@ package components.playerarea;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import observers.ConnectionObserver;
+import observers.GameObserver;
 import observers.IncomingObserver;
-import observers.MenuObserver;
-import observers.Observer;
+
 
 /**
  * Class holding player area controller
  *
  * @author Kevin Mosekjaer
  */
-public class PlayerAreaController implements Observer, MenuObserver, IncomingObserver {
+public class PlayerAreaController implements GameObserver, IncomingObserver, ConnectionObserver {
 
 	/**
 	 * holds player area model
@@ -40,7 +41,7 @@ public class PlayerAreaController implements Observer, MenuObserver, IncomingObs
 	private Locale locale;
 
 	/**
-	 * Constructir
+	 * Constructor
 	 * @param model m
 	 * @param view v
 	 */
@@ -55,8 +56,12 @@ public class PlayerAreaController implements Observer, MenuObserver, IncomingObs
 	 * Updates game timer
 	 */
 	private Runnable updateGameTimerTask = () -> {
-		long elapsed = System.currentTimeMillis() - gameTimer.getStartTime();
-		view.updateGameTimer(formatTime(elapsed));
+		if (!gameTimer.isRunning()) {
+			view.updateGameTimer("00:00");
+		} else {
+			long elapsed = System.currentTimeMillis() - gameTimer.getStartTime();
+			view.updateGameTimer(formatTime(elapsed));
+		}
 	};
 
 	/**
@@ -125,10 +130,14 @@ public class PlayerAreaController implements Observer, MenuObserver, IncomingObs
 
 	/**
 	 * Implemented change turn function
+	 * @param currentPlayer player
 	 */
 	@Override
 	public void changeTurn(int currentPlayer) {
 		boolean currentPlayerTurn = this.model.getPlayerNumber() == currentPlayer;
+		if(!gameTimer.isRunning()) {
+			gameTimer.start();
+		}
 		if(currentPlayerTurn) {
 			view.updateNextMove("Your Turn!");
 			resetTurnTimer();
@@ -143,6 +152,7 @@ public class PlayerAreaController implements Observer, MenuObserver, IncomingObs
 
 	/**
 	 * implemented game finished function
+	 * @param playerNumber num
 	 */
 	@Override
 	public void gameFinished(int playerNumber) {
@@ -171,6 +181,7 @@ public class PlayerAreaController implements Observer, MenuObserver, IncomingObs
 
 	/**
 	 * implemented change language function
+	 * @param language l
 	 */
 	@Override
 	public void changeLanguage(String language) {
@@ -179,6 +190,9 @@ public class PlayerAreaController implements Observer, MenuObserver, IncomingObs
 		view.updatePlayerLabels(bundle);
 	}
 
+	/**
+	 * implemented game start function
+	 */
 	@Override
 	public void gameStart() {
 		if(model.getPlayerNumber()==1) {
@@ -186,19 +200,36 @@ public class PlayerAreaController implements Observer, MenuObserver, IncomingObs
 			startTurn();
 		} else {
 			startGameTimer();
+			view.updateNextMove("Other Player Turn");
 		}
 	}
 
-	@Override
-	public void restartIncoming(int player, String message) {
-		// TODO Auto-generated method stub
-
-	}
-
+	/**
+	 * Implement name incoming function
+	 * @param player p
+	 * @param name n
+	 */
 	@Override
 	public void nameIncoming(int player, String name) {
 		model.setPlayerName(name);	
 		view.setPlayerName(player, name);
+	}
+
+	/**
+	 * Implemented disconnected function
+	 * @param c c
+	 */
+	@Override
+	public void disconnected(int c) {
+		model.setPiecesPlaced(0);
+		view.updatePiecesPlaced(model.getPiecesPlaced());
+		turnTimer.stop();
+		turnTimer.reset();
+		gameTimer.stop();
+		gameTimer.reset();
+		view.updateNextMove("");
+		view.setPlayerName(model.getPlayerNumber(), "");
+		view.updateGamesWon(0);
 	}
 
 }

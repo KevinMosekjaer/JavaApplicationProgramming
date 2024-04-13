@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import observers.ConnectionListener;
 import observers.ConnectionObserver;
+import observers.GameObserver;
 import observers.IncomingObserver;
-import observers.MenuObserver;
-import observers.Observer;
 import observers.OutgoingObserver;
 
 /**
@@ -19,7 +16,7 @@ import observers.OutgoingObserver;
  *
  * @author Kevin Mosekjaer
  */
-public class GameChatController implements Observer, MenuObserver, IncomingObserver, ConnectionObserver { 
+public class GameChatController implements GameObserver, IncomingObserver, ConnectionObserver { 
 
 	/**
 	 * model
@@ -41,14 +38,19 @@ public class GameChatController implements Observer, MenuObserver, IncomingObser
 	 */
 	private Locale locale;
 
-	private boolean remote=false;
+	/**
+	 * variable for if remote or not
+	 */
+	private boolean remote=false, disconnectSent=false;;
 
+	/**
+	 * List of outgoing observers
+	 */
 	private List<OutgoingObserver> outgoing = new ArrayList<>();
 
 
 	/**
 	 * Constructor
-	 *
 	 * @param model model
 	 * @param view view
 	 */
@@ -58,6 +60,10 @@ public class GameChatController implements Observer, MenuObserver, IncomingObser
 		this.view.addChatSendListener(new ChatListener());
 	}
 
+	/**
+	 * Function to add outgoing observers
+	 * @param chat c
+	 */
 	public void addChatSend(OutgoingObserver chat) {
 		outgoing.add(chat);
 	}
@@ -71,6 +77,7 @@ public class GameChatController implements Observer, MenuObserver, IncomingObser
 
 		/**
 		 * implemented action performed function for chat
+		 * @param e e
 		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -93,6 +100,7 @@ public class GameChatController implements Observer, MenuObserver, IncomingObser
 
 	/**
 	 * implemented change turn function
+	 * @param currentPlayer player
 	 */
 	@Override
 	public void changeTurn(int currentPlayer) {
@@ -101,6 +109,7 @@ public class GameChatController implements Observer, MenuObserver, IncomingObser
 
 	/**
 	 * implemented game finished function
+	 * @param playerNumber num
 	 */
 	@Override
 	public void gameFinished(int playerNumber) {
@@ -125,6 +134,7 @@ public class GameChatController implements Observer, MenuObserver, IncomingObser
 
 	/**
 	 * implemented change language function
+	 * @param language l
 	 */
 	@Override
 	public void changeLanguage(String language) {
@@ -133,19 +143,32 @@ public class GameChatController implements Observer, MenuObserver, IncomingObser
 		view.updateChatLabels(bundle);
 	}
 
+	/**
+	 * Implemented function for game starting
+	 */
 	@Override
 	public void gameStart() {
-		System.out.println("Inside game start in game chat controller");
 		model.addMessage("Game Message: First game has started!");
 		view.displayChatMessage(model.getMessage());
-
 	}
 
+	/**
+	 * Implemented function for sending chat messages to chat
+	 * @param message m
+	 */
+	@Override
+	public void sendChat(String message) {
+		model.addMessage("Game Message: " + message);
+		view.displayChatMessage(model.getMessage());
+	}
+
+	/**
+	 * Implemented function for chat incoming from other user
+	 * @param player p
+	 * @param chat c
+	 */
 	@Override
 	public void chatIncoming(int player, String chat) {
-		System.out.println("Inside chat incoming in game chat, player: " + player + ", chat: " + chat);
-		System.out.println("Player 1 name: " + model.getPlayerName(1));
-		System.out.println("Player 2 name: " + model.getPlayerName(2));
 		if(!(player == 1 || player == 2)) {
 			model.addMessage("Game Message: " + chat);
 			view.displayChatMessage(model.getMessage());
@@ -155,30 +178,40 @@ public class GameChatController implements Observer, MenuObserver, IncomingObser
 		}
 	}
 
+	/**
+	 * Implemented function for name incoming from server/client
+	 * @param player p
+	 * @param name n
+	 */
 	@Override
 	public void nameIncoming(int player, String name) {
-		System.out.println("Inside name incoming in chat");
 		model.setPlayerName(player, name);
 		model.addMessage("Game Message: " + name + " has connected");
 		view.displayChatMessage(model.getMessage());
 	}
 
-	@Override
-	public void restartIncoming(int player, String message) {
-		// TODO Auto-generated method stub
-
-	}
-
+	/**
+	 * Implemented function for connection to server/client
+	 * @param c c
+	 */
 	@Override
 	public void connected(int c) {
 		remote = true;
-
 	}
-
+	
+	/**
+	 * Implemented function for disconnection from client/server
+	 * @param c c
+	 */
 	@Override
 	public void disconnected(int c) {
-		// TODO Auto-generated method stub
-
+		if(disconnectSent==false) {
+			disconnectSent=true;
+			model.addMessage("Game Message: Network issues, disconnected...");
+			view.displayChatMessage(model.getMessage());
+		} else {
+			return;
+		}
 	}
 
 }

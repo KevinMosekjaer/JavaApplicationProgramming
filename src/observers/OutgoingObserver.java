@@ -1,7 +1,7 @@
 package observers;
 
 /**
- * Interface for outgoing messages
+ * Observer interface for outgoing messages
  * 
  * @author Kevin Mosekjaer
  */
@@ -17,6 +17,8 @@ public interface OutgoingObserver {
 	
 	/**
 	 * Function for restart outgoing
+	 * @param type t
+	 * @param player p
 	 * @param message m
 	 */
 	public void restartOutgoing(String type, int player, String message);
@@ -45,4 +47,11 @@ public interface OutgoingObserver {
 	 */
 	public void startGameOutgoing(String type, int player, String message);
 	
+	/**
+	 * Function for disconnecting through menu
+	 * @param type t
+	 * @param player p
+	 * @param message m
+	 */
+	default void disconnectingNow(String type, int player, String message) { }
 }

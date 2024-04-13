@@ -46,10 +46,30 @@ public class MenuBar {
 	 * Sub menu options
 	 */
 	private static JMenuItem english, french, host, connect, disconnect, how, about, restart, save, load, option;
+	
+	/**
+	 * JDialogs
+	 */
 	private static JDialog dialogConnect, dialogHost;
+	
+	/**
+	 * TextFields
+	 */
 	private static JTextField hostName, connectName, address, hostStatus, clientStatus;
+	
+	/**
+	 * buttons
+	 */
 	private static JButton connectS, hostS, cancelC, cancelH;
+	
+	/**
+	 * JComboBoxes for selecting port number
+	 */
 	private static JComboBox<String> hostPortSelection, connectPortSelection;
+	
+	/**
+	 * array of existing port choices
+	 */
 	private static String portChoices[] = {"0","80","50","100"};
 
 	/**
@@ -63,18 +83,24 @@ public class MenuBar {
 
 	/**
 	 * Getter for the menu bar
-	 *
 	 * @return JMenuBar menu
 	 */
 	public JMenuBar getMenuBar() {
 		return menuBar;
 	}
 
-
+	/**
+	 * Getter for connect JDialog
+	 * @return dialogConnect
+	 */
 	public JDialog getConnectMenu() {
 		return dialogConnect;
 	}
 
+	/**
+	 * Getter for host JDialog
+	 * @return dialogHost
+	 */
 	public JDialog getHostMenu() {
 		return dialogHost;
 	}
@@ -111,10 +137,6 @@ public class MenuBar {
 		connect = new JMenuItem("Connect");
 		disconnect = new JMenuItem("Disconnect");
 		host.setBorder(new EmptyBorder(0,2,0,45));
-
-		//host.add(dialogHost);
-		//connect.add(dialogConnect);
-
 		network.add(host);
 		network.add(connect);
 		network.add(disconnect);
@@ -146,9 +168,11 @@ public class MenuBar {
 		menuBar.add(network);
 		menuBar.add(language);
 		menuBar.add(help);
-
 	}
 
+	/**
+	 * Function creating Network host menu 
+	 */
 	public static void displayHostNetworkGUI() {
 		// main setup
 		dialogHost = new JDialog();
@@ -238,12 +262,13 @@ public class MenuBar {
 		dialogHost.setContentPane(main);
 		dialogHost.pack();
 		dialogHost.setLocationRelativeTo(null);
-		//dialogHost.setVisible(true);
 	}
 
 
+	/**
+	 * Function creating network connect menu
+	 */
 	public static void displayConnectNetworkGUI() {
-
 		// main setup
 		dialogConnect = new JDialog();
 		dialogConnect.setTitle("Connect to Server");
@@ -374,94 +399,167 @@ public class MenuBar {
 		}
 	}
 
+	/**
+	 * Function to add action listener to host menu option
+	 * @param actionListener a
+	 */
 	public void addHostActionListener(ActionListener actionListener) {
 		host.addActionListener(actionListener);
 	}
 
-
+	/**
+	 * Function adding action listener to connect menu option
+	 * @param actionListener a
+	 */
 	public void addConnectActionListener(ActionListener actionListener) {
 		connect.addActionListener(actionListener);
 	}
 
-
+	/**
+	 * Function adding action listener to disconnect
+	 * @param actionListener a
+	 */
 	public void addDisconnectActionListener(ActionListener actionListener) {
 		disconnect.addActionListener(actionListener);
 	}
 
+	/**
+	 * Function adding action listener to connect button inside connect dialog
+	 * @param e e
+	 */
 	public void addConnectButtonListener(ActionListener e) {
 		connectS.addActionListener(e);
 	}
 
+	/**
+	 * Function adding action listener to host button inside host dialog
+	 * @param e e
+	 */
 	public void addHostButtonListener(ActionListener e) {
 		hostS.addActionListener(e);
 	}
 
+	/**
+	 * Function adding action listener to cancel button inside host dialog
+	 * @param e e
+	 */
 	public void addCancelHostButtonListener(ActionListener e) {
 		cancelH.addActionListener(e);
 	}
 
+	/**
+	 * Function adding action listener to cancel button inside connect dialog
+	 * @param e e
+	 */
 	public void addCancelClientButtonListener(ActionListener e) {
-		cancelH.addActionListener(e);
+		cancelC.addActionListener(e);
 	}
 
+	/**
+	 * Getter for host name
+	 * @return name
+	 */
 	public String getHostName() {
 		return hostName.getText();
 	}
 
+	/**
+	 * Reset host name
+	 */
 	public void resetHostName() {
 		hostName.setText("");
 	}
 
+	/**
+	 * Reset connect name
+	 */
 	public void resetConnectName() {
 		connectName.setText("");
 	}
 
+	/**
+	 * reset address
+	 */
 	public void resetAddress() {
 		address.setText("");
 	}
 
+	/**
+	 * Setter for host waiting status
+	 */
 	public void setHostStatusWaiting() {
 		hostStatus.setText("Waiting for players...");
 	}
 
+	/**
+	 * Setter for host connected status
+	 */
 	public void setHostStatusConnected() {
 		hostStatus.setText("Player has connected!");
 	}
 
+	/**
+	 * Reset host status
+	 */
 	public void resetHostStatus() {
 		hostStatus.setText("");
 	}
 
+	/**
+	 * Setter for client waiting status
+	 */
 	public void setClientStatusWaiting() {
 		clientStatus.setText("Looking for server...");
 	}
 
+	/**
+	 * Setter for client connected status
+	 */
 	public void setClientStatusConnected() {
 		clientStatus.setText("Connected to server!");
 	}
 
+	/**
+	 * Reset client status
+	 */
 	public void resetClientStatus() {
 		clientStatus.setText("");
 	}
 
-
+	/**
+	 * Reset selected port in host
+	 */
 	public void hostResetPort() {
 		hostPortSelection.setSelectedIndex(0);
 	}
 
+	/**
+	 * Reset selected port in connect
+	 */
 	public void connectResetPort() {
 		connectPortSelection.setSelectedIndex(0);
 	}
 
+	/**
+	 * Getter for connect name
+	 * @return name
+	 */
 	public String getConnectName() {
 		return connectName.getText();
 	}
 
+	/**
+	 * Getter for address
+	 * @return address
+	 */
 	public String getAddress() {
 		return address.getText();
 	}
 
-
+	/**
+	 * Getter for selected port in host
+	 * @return port or error
+	 */
 	public int hostGetPort() {
 		Object selectedItem = hostPortSelection.getSelectedItem();
 		if (selectedItem != null) {
@@ -475,6 +573,10 @@ public class MenuBar {
 		return -1;
 	}
 
+	/**
+	 * Getter for selected port in connect
+	 * @return port or error
+	 */
 	public int connectGetPort() {
 		Object selectedItem = connectPortSelection.getSelectedItem();
 		if (selectedItem != null) {
@@ -488,15 +590,26 @@ public class MenuBar {
 		return -1;
 	}
 
-
+	/**
+	 * Message for server started
+	 */
 	public void serverAlreadyStarted() {
 		JOptionPane.showMessageDialog(dialogHost, "A Server is already running, please disconnect and try again.", "Server Already Running", JOptionPane.ERROR_MESSAGE);
 	}
 
+	/**
+	 * Message for client started
+	 */
 	public void clientAlreadyStarted() {
 		JOptionPane.showMessageDialog(dialogConnect, "A client connection is active, please disconnect and try again.", "Client Already Connected", JOptionPane.ERROR_MESSAGE);
 	}
-
+	
+	/**
+	 * Message for name too long
+	 */
+	public void nameTooLong() {
+		JOptionPane.showMessageDialog(null, "Name must be within 20 characters.", "Name too long", JOptionPane.ERROR_MESSAGE);
+	}
 
 	/**
 	 * Updates menu labels

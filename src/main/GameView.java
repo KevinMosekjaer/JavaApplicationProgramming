@@ -2,6 +2,8 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -77,7 +79,7 @@ public class GameView extends JFrame {
 		// Set preferred size and orientation
 		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
-		rightSide.setPreferredSize(new Dimension(400,0));
+		rightSide.setPreferredSize(new Dimension(325,0));
 
 		// Initialize all component views
 		menu = new MenuBar();
@@ -108,6 +110,7 @@ public class GameView extends JFrame {
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.setMinimumSize(new Dimension(960,875));
 	}
 
 	/**

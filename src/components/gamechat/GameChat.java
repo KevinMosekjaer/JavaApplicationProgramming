@@ -9,6 +9,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
@@ -26,9 +27,14 @@ public class GameChat {
 	private JPanel panel, top, bottom, center;
 
 	/**
-	 * JTextARea for chat, title
+	 * JTextArea for chat, title
 	 */
 	private JTextArea chatArea, title;
+	
+	/**
+	 * Scrolling chat area
+	 */
+	private JScrollPane scrollChat;
 
 	/**
 	 * text box to write messages
@@ -39,16 +45,6 @@ public class GameChat {
 	 * button to send messages to chat
 	 */
 	private JButton send;
-
-	/**
-	 * Holds title, variable to add messages
-	 */
-	//private JLabel chat, newMessage;
-
-	/**
-	 * Holds scrollable chat
-	 */
-	//private JScrollPane scrollChat;
 
 	/**
 	 * Borders to separate sections
@@ -81,11 +77,12 @@ public class GameChat {
 		center = new JPanel(new BorderLayout());
 
 		// Top area
-		//chat = new JLabel("Chat");
 		title = new JTextArea("Chat");
 		title.setEditable(false);
 		title.setFocusable(false);
+		title.setBackground(null);
 		top.add(title);
+		//top.setBackground(Color.WHITE);
 		underTitle = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK);
 		top.setBorder(underTitle);
 		panel.add(top, BorderLayout.NORTH);
@@ -97,8 +94,14 @@ public class GameChat {
 		chatArea.setBackground(Color.WHITE);
 		chatArea.setEditable(false);
 		center.setBackground(Color.WHITE);
+		
+		scrollChat = new JScrollPane(chatArea);
+		scrollChat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); 
+		scrollChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    
+	    center.add(scrollChat, BorderLayout.CENTER);
 
-		center.add(chatArea, BorderLayout.WEST);
+		//center.add(chatArea, BorderLayout.WEST);
 		panel.add(center, BorderLayout.CENTER);
 
 

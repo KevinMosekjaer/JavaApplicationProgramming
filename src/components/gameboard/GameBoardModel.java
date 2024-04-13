@@ -52,8 +52,10 @@ public class GameBoardModel {
 		if (checkHorizontal() || checkVertical() || checkDiagonal()) {
 			return currentPlayer;
 		}
+		System.out.println("Inside check winner, grid values: ");
 		for (int i = 0; i < ROW; i++) {
 			for (int j = 0; j < COL; j++) {
+				System.out.println("Grid " + i + " " + j + " is: " + grid[i][j]);
 				if (grid[i][j] == 0) {
 					return 0;
 				}
@@ -91,7 +93,6 @@ public class GameBoardModel {
 				grid[i][j] = 0;
 			}
 		}
-		currentPlayer = 1;
 	}
 
 	/**
@@ -159,12 +160,16 @@ public class GameBoardModel {
 	}
 	/**
 	 * Getter for current player
-	 * @return player
+	 * @return player p
 	 */
 	public int getCurrentPlayer() {
 		return currentPlayer;
 	}
 
+	/**
+	 * Setter for current player
+	 * @param player p
+	 */
 	public void setCurrentPlayer(int player) {
 		this.currentPlayer = player;
 	}
@@ -185,7 +190,10 @@ public class GameBoardModel {
 		return ableToPlace;
 	}
 
-
+	/**
+	 * Setter for game has started
+	 * @param hasStarted started
+	 */
 	public void setHasStarted(boolean hasStarted) {
 		this.hasStarted = hasStarted;
 	}
@@ -198,11 +206,18 @@ public class GameBoardModel {
 		return hasStarted;
 	}
 
+	/**
+	 * Getter for this player
+	 * @return player
+	 */
 	public int getThisPlayer() {
 		return thisPlayer;
 	}
 
-
+	/**
+	 * Setter for this player
+	 * @param player p
+	 */
 	public void setThisPlayer(int player) {
 		this.thisPlayer = player;
 	}

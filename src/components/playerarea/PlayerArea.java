@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Class holding the PlayerArea component to be called into Main
@@ -25,7 +26,7 @@ public class PlayerArea {
 	/**
 	 * JPanel holding player area components
 	 */
-	private JPanel panel, rightSide, leftSide, playerColorPanel, namePanel;
+	private JPanel panel, rightSide, leftSide, top, playerColorPanel, namePanel;
 
 	/**
 	 * JLabels for player area components
@@ -86,6 +87,10 @@ public class PlayerArea {
 		leftSide = new JPanel();
 		leftSide.setLayout(new BoxLayout(leftSide, BoxLayout.Y_AXIS));
 		rightSide.setLayout(new BoxLayout(rightSide, BoxLayout.Y_AXIS));
+		top = new JPanel();
+		top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+		top.setBorder(new EmptyBorder(5,0,10,0));
+		top.setBackground(Color.WHITE);
 
 
 		name = new JLabel("Player " + playerNumber + ": " + playerName);
@@ -94,7 +99,7 @@ public class PlayerArea {
 		namePanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 		namePanel.add(name);
 		namePanel.setBackground(Color.WHITE); 
-		leftSide.add(namePanel, BorderLayout.NORTH);
+		top.add(namePanel);
 
 		nextSection = setupPlayerAreaSection("Next Move: ");
 		timerSection = setupPlayerAreaSection("Turn Time Elapsed: ");
@@ -107,6 +112,7 @@ public class PlayerArea {
 
 
 		// Adds everything together
+		panel.add(top, BorderLayout.NORTH);
 		panel.add(leftSide, BorderLayout.WEST);
 		panel.add(rightSide, BorderLayout.EAST);
 

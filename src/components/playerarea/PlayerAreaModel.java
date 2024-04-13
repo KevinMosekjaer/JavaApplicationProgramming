@@ -20,7 +20,7 @@ public class PlayerAreaModel {
 	/**
 	 * Variables for time
 	 */
-	private long turnStartTime, gameStartTime;//, totalGameTime=0;
+	private long turnStartTime, gameStartTime;
 
 	/**
 	 * Constructor for PlayerAreaModel

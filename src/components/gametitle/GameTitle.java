@@ -2,10 +2,10 @@ package components.gametitle;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Class holding the Game logo/title to be called in main
@@ -49,10 +49,11 @@ public class GameTitle {
 	 * Function creating the game title component and adding to a JPanel
 	 */
 	private void initializeGameTitle() {
-		panel=new JPanel();
+		panel=new JPanel(new BorderLayout());
 		logo = new ImageIcon(GameTitle.class.getResource("/assets/Connect4_Logo.png"));
 		label = new JLabel(logo);
-		panel.add(label, BorderLayout.NORTH);
+		panel.add(label, BorderLayout.CENTER);
+		panel.setBorder(new EmptyBorder(10,10,10,10));
 		panel.setBackground(Color.decode("#cde3fa"));
 	}
 }

@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import observers.ClientServerConnection;
-import observers.ConnectionListener;
 import observers.ConnectionObserver;
-import observers.MenuObserver;
+import observers.GameObserver;
 import observers.OutgoingObserver;
 
 /**
@@ -34,17 +31,34 @@ public class MenuBarController implements ConnectionObserver {
 	private Locale locale;
 
 	/**
-	 * holds list of observers
+	 * List of game observers
 	 */
-	private List<MenuObserver> observers = new ArrayList<>();
-	
+	private List<GameObserver> gameObservers = new ArrayList<>();
+
+	/**
+	 * list of connection observers
+	 */
 	private List<ConnectionObserver> connectionObservers = new ArrayList<>();
 
-	private List<OutgoingObserver> outgoing = new ArrayList<>();
+	/**
+	 * list of outgoing message observers
+	 */
+	private List<OutgoingObserver> outgoingObservers = new ArrayList<>();
 
-	private boolean serverActive = false, clientActive = false;
+	/**
+	 * boolean variables for remote connections
+	 */
+	private boolean serverActive = false, clientActive = false, connected = false;
 
+	/**
+	 * name of server and client
+	 */
 	private String serverName, clientName;
+
+	/**
+	 * Player number for this entity
+	 */
+	private int playerNumber;
 
 	/**
 	 * Constructor
@@ -55,32 +69,64 @@ public class MenuBarController implements ConnectionObserver {
 		addMenuListeners();
 	}
 
-	public void addNameSend(OutgoingObserver name) {
-		outgoing.add(name);
+	/**
+	 * Function for adding outgoing observers
+	 * @param name n
+	 */
+	public void addOutgoingObserver(OutgoingObserver name) {
+		outgoingObservers.add(name);
 	}
-	
+
+	/**
+	 * Function for adding connection observers
+	 * @param connectionObserver c
+	 */
 	public void addConnectionObserver(ConnectionObserver connectionObserver) {
 		connectionObservers.add(connectionObserver);
 	}
 
+	/**
+	 * Function for starting client entity
+	 * @param name name
+	 * @param address address
+	 * @param port port
+	 */
 	public void clientStart(String name, String address, int port) {
 		this.clientName = name;
 		connectionObservers.forEach(connectionObserver -> connectionObserver.clientConnect(name, address, port));
 	}
 
+	/**
+	 * Function for starting server entity
+	 * @param name name 
+	 * @param port port
+	 */
 	public void serverStart(String name, int port) {
 		this.serverName = name;
 		connectionObservers.forEach(connectionObserver -> connectionObserver.serverConnect(name, port));
 	}
 
+	/**
+	 * Function for client disconnecting through menu
+	 */
 	public void clientDisconnect() {
+		outgoingObservers.forEach(outgoingObserver -> outgoingObserver.disconnectingNow("ds",0,"ds"));
 		connectionObservers.forEach(connectionObserver -> connectionObserver.clientDisconnect());
 	}
 
+	/**
+	 * Function for server disconnecting through menu
+	 */
 	public void serverDisconnect() {
+		outgoingObservers.forEach(outgoingObserver -> outgoingObserver.disconnectingNow("ds",0,"ds"));
 		connectionObservers.forEach(connectionObserver -> connectionObserver.serverDisconnect());
 	}
 
+	/**
+	 * Getter for client/server name
+	 * @param num n
+	 * @return name
+	 */
 	public String getName(int num) {
 		if(num==1) {
 			return serverName;
@@ -91,10 +137,10 @@ public class MenuBarController implements ConnectionObserver {
 
 	/**
 	 * Adds observers
-	 * @param observer o
+	 * @param gameObserver o
 	 */
-	public void addObserver(MenuObserver observer) {
-		observers.add(observer);
+	public void addGameObserver(GameObserver gameObserver) {
+		gameObservers.add(gameObserver);
 	}
 
 	/**
@@ -102,7 +148,7 @@ public class MenuBarController implements ConnectionObserver {
 	 * @param language l
 	 */
 	public void changeLanguage(String language) {
-		observers.forEach(observer -> observer.changeLanguage(language));
+		gameObservers.forEach(gameObserver -> gameObserver.changeLanguage(language));
 		locale = new Locale(language);
 		bundle = ResourceBundle.getBundle("messagebundles.MessageBundle", locale);
 		view.updateMenuLabels(bundle);
@@ -125,25 +171,41 @@ public class MenuBarController implements ConnectionObserver {
 		view.addCancelHostButtonListener(e -> resetHost());
 	}
 
+	/**
+	 * Function for resetting connect menu
+	 */
 	private void resetConnect() {
 		view.resetConnectName();
 		view.resetAddress();
 		view.connectResetPort();
 		view.resetClientStatus();
+		view.getConnectMenu().setVisible(false);
+		clientDisconnect();
 	}
 
+	/**
+	 * Function for resetting host menu
+	 */
 	private void resetHost() {
 		view.resetHostName();
 		view.hostResetPort();
 		view.resetHostStatus();
+		view.getHostMenu().setVisible(false);
+		serverDisconnect();
 	}
 
+	/**
+	 * Function to handle client connection
+	 */
 	private void handleConnect() {
 		if(serverActive) {
 			view.serverAlreadyStarted();
 			return;
 		} else if(clientActive) {
 			view.clientAlreadyStarted();
+			return;
+		} else if(view.getConnectName().length() > 20) {
+			view.nameTooLong();
 			return;
 		} else {
 			try {
@@ -155,6 +217,7 @@ public class MenuBarController implements ConnectionObserver {
 				clientStart(name, address, port);
 				view.setClientStatusWaiting();
 				clientActive = true;
+				this.playerNumber=2;
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}
@@ -162,6 +225,9 @@ public class MenuBarController implements ConnectionObserver {
 
 	}
 
+	/**
+	 * Function to handle host connection 
+	 */
 	private void handleHost() {
 		if(serverActive) {
 			view.serverAlreadyStarted();
@@ -169,59 +235,89 @@ public class MenuBarController implements ConnectionObserver {
 		} else if(clientActive) {
 			view.clientAlreadyStarted();
 			return;
+		} else if(view.getHostName().length() > 20) {
+			view.nameTooLong();
+			return;
 		} else {
 			try {
-				System.out.println("Server connection started");
 				String name = view.getHostName();
 				int port = view.hostGetPort();
-				System.out.println("Name: " + name + "\nPort: " + port);
 				serverStart(name, port);
 				view.setHostStatusWaiting();
 				serverActive=true;
+				this.playerNumber=1;
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * Function for handling server/client disconnection
+	 */
 	private void handleDisconnect() {
 		if (clientActive) {
 			clientDisconnect();
 			clientActive = false;
 			resetConnect();
+			//gameObservers.forEach(gameObserver -> gameObserver.sendChat("Game Message: Network issues, disconnected..."));
 		} else if (serverActive) {
 			serverDisconnect();
 			serverActive = false;
 			resetHost();
+			//gameObservers.forEach(gameObserver -> gameObserver.sendChat("Game Message: Network issues, disconnected..."));
 		}
+
 	}
 
 	/**
 	 * Contacts observers of restart
 	 */
 	private void restartGame() {
-		observers.forEach(MenuObserver::restartGame);
+		if(!connected) {
+			gameObservers.forEach(gameObserver -> gameObserver.restartGame());
+		} else if(connected) {
+			outgoingObservers.forEach(outgoingObserver -> outgoingObserver.restartOutgoing("rr", this.playerNumber, "request"));
+			if(this.playerNumber==1) {
+				gameObservers.forEach(gameObserver -> gameObserver.sendChat("Waiting for " + clientName + " to respond..."));
+			} else if(this.playerNumber==2) {
+				gameObservers.forEach(gameObserver -> gameObserver.sendChat("Waiting for " + serverName + " to respond..."));
+			}
+
+		}
 	}
 
+	/**
+	 * Implemented function for connection from server/client
+	 * @param c c
+	 */
 	@Override
 	public void connected(int c) {
 		if(c==1) {
-			System.out.println("Inside connected in menu bar: server");
 			view.resetHostStatus();
 			view.setHostStatusConnected();
-			outgoing.forEach(nameSend -> nameSend.nameOutgoing("un", c,serverName));
+			connected = true;
+			outgoingObservers.forEach(outgoingObserver -> outgoingObserver.nameOutgoing("un", c,serverName));
 		} else {
-			System.out.println("Inside connected in menu bar: client");
 			view.resetClientStatus();
 			view.setClientStatusConnected();
-			outgoing.forEach(nameSend -> nameSend.nameOutgoing("un", c, clientName));
+			connected = true;
+			outgoingObservers.forEach(outgoingObserver -> outgoingObserver.nameOutgoing("un", c, clientName));
 		}		
 	}
 
+	/**
+	 * Implemented function for disconnection from server/client
+	 * @param c c
+	 */
 	@Override
 	public void disconnected(int c) {
-		// TODO Auto-generated method stub
-
+		connected=false;
+		if(c==1) {
+			resetHost();
+		} else {
+			resetConnect();
+		}
 	}
 
 }

@@ -19,6 +19,9 @@ public class GameChatModel {
 	 */
 	private int myPlayerNumber, otherPlayerNumber, currentPlayer=1, playerNumber=1;
 
+	/**
+	 * player names
+	 */
 	private String myPlayerName, otherPlayerName;
 
 
@@ -31,7 +34,6 @@ public class GameChatModel {
 
 	/**
 	 * Function to add message to the LL
-	 *
 	 * @param message message
 	 */
 	public void addMessage(String message) {
@@ -40,7 +42,6 @@ public class GameChatModel {
 
 	/**
 	 * Function to get last element, ie. message from LL
-	 *
 	 * @return message m
 	 */
 	public String getMessage() {
@@ -49,7 +50,7 @@ public class GameChatModel {
 
 	/**
 	 * Setter for player number
-	 * @param playerNumber n
+	 * @param num n
 	 */
 	public void setPlayerNumber(int num) {
 		this.playerNumber=num;
@@ -63,36 +64,27 @@ public class GameChatModel {
 		return playerNumber;
 	}
 
-
-	/*
-	 * Need to figure out what player names to use/keep and which to get rid of
+	/**
+	 * Setter for this player number
+	 * @param playerNumber n
 	 */
-
-	public void setOtherPlayerNumber(int playerNumber) {
-		this.otherPlayerNumber = playerNumber;
-	}
-
-	public void setCurrentPlayer(int player) {
-		this.currentPlayer=player;
-	}
-
-	public int getCurrentPlayer() {
-		return currentPlayer;
-	}
-
-	public int getOtherPlayerNumber() {
-		return otherPlayerNumber;
-	}
-
 	public void setMyPlayerNumber(int playerNumber) {
 		this.myPlayerNumber = playerNumber;
 	}
 
+	/**
+	 * Getter for this player number
+	 * @return num
+	 */
 	public int getMyPlayerNumber() {
 		return myPlayerNumber;
 	}
 
-
+	/**
+	 * Setter for player names
+	 * @param playerNumber p
+	 * @param name n
+	 */
 	public void setPlayerName(int playerNumber, String name) {
 		if(playerNumber == myPlayerNumber) {
 			this.myPlayerName = name;
@@ -101,6 +93,11 @@ public class GameChatModel {
 		}
 	}
 
+	/**
+	 * Getter for player names
+	 * @param playerNumber p
+	 * @return name n
+	 */
 	public String getPlayerName(int playerNumber) {
 		if(playerNumber == myPlayerNumber) {
 			return myPlayerName;

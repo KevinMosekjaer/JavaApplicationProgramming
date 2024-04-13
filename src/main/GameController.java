@@ -17,8 +17,6 @@ import components.gameboard.GameBoardController;
 import components.gamechat.GameChatController;
 import components.menubar.MenuBarController;
 import components.playerarea.PlayerAreaController;
-import observers.ClientServerConnection;
-import observers.ConnectionListener;
 import observers.ConnectionObserver;
 
 /**
@@ -58,14 +56,29 @@ public class GameController implements ConnectionObserver {
 	 */
 	private MenuBarController menuController;
 
+	/**
+	 * Server object
+	 */
 	private Server server;
 
+	/**
+	 * Client object
+	 */
 	private Client client;
 
+	/** 
+	 * socket
+	 */
 	private Socket socket;
 
+	/** 
+	 * network communication object
+	 */
 	private Network cs;
 
+	/** 
+	 * names
+	 */
 	private String clientName, serverName;
 
 	/**
@@ -126,43 +139,57 @@ public class GameController implements ConnectionObserver {
 		chatController = new GameChatController(model.getGameChatModel(), view.getGameChat());
 		boardController = new GameBoardController(model.getGameBoardModel(), view.getGameBoard());
 		playerController1 = new PlayerAreaController(model.getPlayerAreaModel1(), view.getPlayerArea(1));
-		playerController2 = new PlayerAreaController(model.getPlayerAreaModel2(), view.getPlayerArea(2));
-		boardController.addTurnListener(playerController1);
-		boardController.addTurnListener(playerController2);
-		boardController.addTurnListener(chatController);
+		playerController2 = new PlayerAreaController(model.getPlayerAreaModel2(), view.getPlayerArea(2));	
+		boardController.addGameObserver(playerController1);
+		boardController.addGameObserver(playerController2);
+		boardController.addGameObserver(chatController);
+		boardController.addGameObserver(boardController);
 		menuController = new MenuBarController(view.getMenuBarArea());
-		menuController.addObserver(boardController);
-		menuController.addObserver(chatController);
-		menuController.addObserver(playerController1);
-		menuController.addObserver(playerController2);
+		menuController.addGameObserver(boardController);
+		menuController.addGameObserver(chatController);
+		menuController.addGameObserver(playerController1);
+		menuController.addGameObserver(playerController2);
 		menuController.addConnectionObserver(this);
 	}
 
+	/**
+	 * Function to allow communication between server and client
+	 * @param c 1 for server, 2 for client
+	 */
 	public void initializeClientServerComs(int c) {
-		System.out.println("Adding observers to client/server");
-		if(c==1) {
+		if(c==1) { // server connection
 			cs = server.getReceiveSend();
 			cs.addIncomingObserver(chatController);
 			cs.addIncomingObserver(boardController);
 			cs.addIncomingObserver(playerController2);
-
+			cs.addConnectionObserver(server);
 			chatController.addChatSend(cs);
-			menuController.addNameSend(cs);
-			boardController.addGameSend(cs);
-		} else if(c==2) {
+			menuController.addOutgoingObserver(cs);
+			boardController.addOutgoingObserver(cs);
+		} else if(c==2) { // client connection
 			cs = client.getReceiveSend();
 			cs.addIncomingObserver(chatController);
 			cs.addIncomingObserver(boardController);
 			cs.addIncomingObserver(playerController1);
-
+			cs.addConnectionObserver(client);
 			chatController.addChatSend(cs);
-			menuController.addNameSend(cs);
-			boardController.addGameSend(cs);
-		}
+			menuController.addOutgoingObserver(cs);
+			boardController.addOutgoingObserver(cs);
+		} 
+		cs.addConnectionObserver(boardController);
+		cs.addConnectionObserver(chatController);
+		cs.addConnectionObserver(playerController1);
+		cs.addConnectionObserver(playerController2);
+		menuController.addConnectionObserver(cs);	
 
 	}
 
-
+	/**
+	 * Implemented function for client connect
+	 * @param name n
+	 * @param address a
+	 * @param port p
+	 */
 	@Override
 	public void clientConnect(String name, String address, int port) {
 		this.clientName = name;
@@ -171,9 +198,13 @@ public class GameController implements ConnectionObserver {
 		client.addConnectionObserver(menuController);
 		client.addConnectionObserver(chatController);
 		client.addConnectionObserver(boardController);
-		System.out.println("Client connected");
 	}
 
+	/**
+	 * Implemented function for server connect
+	 * @param name n
+	 * @param port p
+	 */
 	@Override
 	public void serverConnect(String name, int port) {
 		this.serverName = name;
@@ -182,30 +213,36 @@ public class GameController implements ConnectionObserver {
 		server.addConnectionObserver(menuController);
 		server.addConnectionObserver(chatController);
 		server.addConnectionObserver(boardController);
-		System.out.println("Server connected");
 	}
 
+	/**
+	 * Implemented function for client disconnect
+	 */
 	@Override
 	public void clientDisconnect() {
 		if (client != null) {
 			client.disconnect();
 			client = null;
-			System.out.println("Client disconnected.");
 		}
 	}
 
+	/**
+	 * Implemented function for server disconnect
+	 */
 	@Override
 	public void serverDisconnect() {
 		if (server != null) {
 			server.disconnect();
 			server = null;
-			System.out.println("Server disconnected.");
 		}
 	}
 
+	/**
+	 * Implemented function for server/client connection
+	 * @param c 1 for server, 2 for client
+	 */
 	@Override
 	public void connected(int c) {
-		System.out.println("In connected function about to call observer coms");
 		initializeClientServerComs(c);
 		if(c==1) { // 1 means connection from server
 			model.getGameChatModel().setMyPlayerNumber(1);
@@ -213,23 +250,13 @@ public class GameController implements ConnectionObserver {
 			model.getPlayerAreaModel1().setPlayerName(menuController.getName(1));
 			view.getPlayerArea(c).setPlayerName(c, menuController.getName(1));
 			model.getGameBoardModel().setThisPlayer(c);
-			if(c==1) {
-				model.getGameChatModel().setOtherPlayerNumber(2);
-			}
 		} else { // 2 means connection from client
 			model.getGameChatModel().setMyPlayerNumber(2);
 			model.getGameChatModel().setPlayerName(2, menuController.getName(2));
 			model.getPlayerAreaModel2().setPlayerName(menuController.getName(2));
 			view.getPlayerArea(2).setPlayerName(2, menuController.getName(2));
-			model.getGameChatModel().setOtherPlayerNumber(1);
-			model.getGameBoardModel().setThisPlayer(c);
+			model.getGameBoardModel().setThisPlayer(2);
 		}
-	}
-
-	@Override
-	public void disconnected(int c) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

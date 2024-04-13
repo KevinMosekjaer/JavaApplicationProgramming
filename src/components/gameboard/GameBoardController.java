@@ -3,9 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import observers.ConnectionObserver;
+import observers.GameObserver;
 import observers.IncomingObserver;
-import observers.MenuObserver;
-import observers.Observer;
 import observers.OutgoingObserver;
 
 /**
@@ -13,7 +12,7 @@ import observers.OutgoingObserver;
  *
  * @author Kevin Mosekjaer
  */
-public class GameBoardController implements MenuObserver, IncomingObserver, ConnectionObserver { 
+public class GameBoardController implements GameObserver, IncomingObserver, ConnectionObserver { 
 
 	/**
 	 * game board model
@@ -25,14 +24,20 @@ public class GameBoardController implements MenuObserver, IncomingObserver, Conn
 	 */
 	private GameBoard view;
 
-	private boolean waiting=true, playerSet=false, remote=false;
+	/**
+	 * boolean variables related to remote connection
+	 */
+	private boolean waiting=true, playerSet=false, remote=false, otherAgain, meAgain;
 
 	/**
-	 * List of observers
+	 * list of game observers
 	 */
-	private List<Observer> turn = new ArrayList<>();
+	private List<GameObserver> gameObservers = new ArrayList<>();
 
-	private List<OutgoingObserver> outgoing = new ArrayList<>();
+	/**
+	 * list of outgoing observers
+	 */
+	private List<OutgoingObserver> outgoingObservers = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -45,8 +50,12 @@ public class GameBoardController implements MenuObserver, IncomingObserver, Conn
 		initializeController();
 	}
 
-	public void addGameSend(OutgoingObserver move) {
-		outgoing.add(move);
+	/**
+	 * Function for adding outgoing observers
+	 * @param outgoingObserver o
+	 */
+	public void addOutgoingObserver(OutgoingObserver outgoingObserver) {
+		outgoingObservers.add(outgoingObserver);
 	}
 
 	/**
@@ -62,18 +71,18 @@ public class GameBoardController implements MenuObserver, IncomingObserver, Conn
 
 	/**
 	 * Adds observer
-	 * @param listener l
+	 * @param gameObserver o
 	 */
-	public void addTurnListener(Observer listener) {
-		turn.add(listener);
+	public void addGameObserver(GameObserver gameObserver) {
+		gameObservers.add(gameObserver);
 	}
 
 	/**
 	 * Notifies listeners of turn change
 	 */
 	private void notifyTurnChange() {
-		for (Observer listener : turn) {
-			listener.changeTurn(model.getCurrentPlayer());
+		for (GameObserver gameObserver : gameObservers) {
+			gameObserver.changeTurn(model.getCurrentPlayer());
 		}
 	}
 
@@ -82,21 +91,36 @@ public class GameBoardController implements MenuObserver, IncomingObserver, Conn
 	 */
 	private void notifyGameFinished() {
 		boolean reset;
-		for (Observer listener : turn) {
-			listener.gameFinished(model.checkWinner());
+		for (GameObserver gameObserver : gameObservers) {
+			gameObserver.gameFinished(model.checkWinner());
 		}
+		model.setAbleToPlace(false);
+		meAgain=false;
+		otherAgain=false;
 		if(reset = view.displayWinner(model.checkWinner())) {
-			model.resetGrid();
-			view.resetGameBoard();
+			if(remote) {
+				meAgain=true;
+				outgoingObservers.forEach(outgoingObserver -> outgoingObserver.restartOutgoing("rr", model.getThisPlayer(), "playAgain"));
+				model.resetGrid();
+				view.resetGameBoard();
+			} else {
+				model.resetGrid();
+				view.resetGameBoard();
+				model.setAbleToPlace(true);
+			}
 		} else {
-			model.setAbleToPlace(false);
+			if(remote) {
+				meAgain=false;
+			}
 		}
 	}
 
+	/**
+	 * Function for notifying game observers of game starting
+	 */
 	private void notifyGameStart() {
-		System.out.println("Calling game start from game board");
-		for (Observer listener : turn) {
-			listener.gameStart();
+		for (GameObserver gameObserver : gameObservers) {
+			gameObserver.gameStart();
 		}
 	}
 
@@ -105,54 +129,76 @@ public class GameBoardController implements MenuObserver, IncomingObserver, Conn
 	 * @param col c
 	 */
 	public void placePiece(int col) {
-		System.out.println("inside place piece in game board controller");
-		if(!model.getHasStarted()) {
+		if(!model.getHasStarted()) { // if game has not started
 			if(remote) { // check if remote
-				if(!waiting) {
-					System.out.println("This player number in not waiting: " + model.getThisPlayer());
+				if(!waiting) { // not waiting for game to start 
 					model.setHasStarted(true);
-					notifyGameStart();
-				} else if(waiting) {
+				} else if(waiting) { // waiting for game to start
 					if(view.startGamePrompt()) {
-						System.out.println("This player number in waiting: " + model.getThisPlayer());
-						outgoing.forEach(out -> out.startGameOutgoing("sg", model.getCurrentPlayer(), "request"));
+						outgoingObservers.forEach(outgoingObserver -> outgoingObserver.startGameOutgoing("sg", model.getThisPlayer(), "request"));
 						return;
 					}
 				}
 			} else { // end check if remote
-				if(view.startGamePrompt()) {
+				model.setCurrentPlayer(1);
+				model.setThisPlayer(1);
+				if(view.startGamePrompt()) { // if not remote prompt to start game
 					model.setHasStarted(true);
 					notifyGameStart();
 					return;
+				} 
+			}
+		}
+		if(!model.getAbleToPlace()) { // if not able to place pieces	
+			if(remote) { // if remote			
+				if(meAgain==true && otherAgain==true) { // this player and other player want to play again
+					model.setAbleToPlace(true);
+					gameObservers.forEach(gameObserver -> gameObserver.sendChat("Game starting!"));
+				} else if(meAgain==true && otherAgain==false) { // this player wants to play again other does not
+					outgoingObservers.forEach(outgoingObserver -> outgoingObserver.restartOutgoing("rr", model.getThisPlayer(), "request"));
+					gameObservers.forEach(gameObserver -> gameObserver.sendChat("Waiting For other player to respond to request..."));
+					return;
+				} else if(meAgain==false && otherAgain==true){ // this player does not want to play again other does
+					if(view.playAgain()) { // prompts this player if wants to play again
+						outgoingObservers.forEach(outgoingObserver -> outgoingObserver.restartOutgoing("rr", model.getThisPlayer(), "playAgain"));
+					} else { // if false exit function
+						return;
+					}
+				} else { // both dont want to play prompt to play on click
+					if(view.playAgain()) { // ask this player if wants to play again
+						outgoingObservers.forEach(outgoingObserver -> outgoingObserver.restartOutgoing("rr", model.getThisPlayer(), "request"));
+						return;
+					} else { // if no exit function
+						return;
+					}
 				}
+			} else { // if not remote
+				if(view.playAgain()) { // if yes reset game and return
+					model.resetGrid();
+					view.resetGameBoard();
+					model.setAbleToPlace(true);
+					return;
+				} else { // if no return with cant place piece
+					model.setAbleToPlace(false);
+					return;
+				}			
 			}
-			//return;
 		}
-		if(!model.getAbleToPlace()) {
-			if(view.playAgain()) {
-				model.setAbleToPlace(true);
-				model.resetGrid();
-				view.resetGameBoard();
-			}
-			return;
-		}
-		if(remote) {
-			if(model.getThisPlayer() != model.getCurrentPlayer()) {
+		if(remote) { // if remote
+			if(model.getThisPlayer() != model.getCurrentPlayer()) { // check if it is this players turn
 				view.notYourTurn();
 				return;
 			}
 		}
-		System.out.println("About to place piece from place piece game controller");
 		boolean placed = model.placePiece(col);
-		if(placed) {
-			if(remote) {
-				outgoing.forEach(out -> out.gameMoveOutgoing("gm", model.getCurrentPlayer(), col));
-			}
+		if(placed) { // if place piece successful
 			updateAllGridIcons();
-			int winner = model.checkWinner();
-			if (winner != 0) {
+			if(remote) { // check if remote
+				outgoingObservers.forEach(outgoingObserver -> outgoingObserver.gameMoveOutgoing("gm", model.getCurrentPlayer(), col));
+			}
+			if (model.checkWinner() != 0) { // if game finished
 				notifyGameFinished();
-			} else {
+			} else { // game not finished
 				model.switchPlayer();
 				notifyTurnChange();
 			}
@@ -195,64 +241,83 @@ public class GameBoardController implements MenuObserver, IncomingObserver, Conn
 		model.setAbleToPlace(true);
 		model.resetGrid();
 		view.resetGameBoard();
-
 	}
 
+	/**
+	 * Implemented function for game move incoming from other user
+	 * @param player p
+	 * @param col c
+	 */
 	@Override
 	public void gameMoveIncoming(int player, int col) {
 		if (model.getThisPlayer() == model.getCurrentPlayer()) {
-			System.out.println("It's not your turn, please wait.");
 			return;
 		}
 		if (model.placePiece(col)) {
 			updateAllGridIcons();
-			model.switchPlayer();
-			notifyTurnChange();
-			int winner = model.checkWinner();
-			if (winner != 0) {
+			if (model.checkWinner() != 0) {
 				notifyGameFinished();
+			} else {
+				model.switchPlayer();
+				notifyTurnChange();
 			}
-		} else {
-			System.out.println("Move could not be placed. Column may be full.");
+		} 
+	}
+
+	/**
+	 * Implemented function for restart incoming 
+	 * @param player p
+	 * @param message m
+	 */
+	@Override
+	public void restartIncoming(int player, String message) {
+		if(message.equals("request")) {
+			boolean answer = view.restartGamePrompt(player);
+			if(answer) {
+				//meAgain=true;
+				outgoingObservers.forEach(outgoingObserver -> outgoingObserver.restartOutgoing("rr", model.getThisPlayer(), "accept"));
+				gameObservers.forEach(gameObserver -> gameObserver.restartGame());
+				model.setCurrentPlayer(player);
+			} else {
+				outgoingObservers.forEach(outgoingObserver -> outgoingObserver.restartOutgoing("rr", model.getThisPlayer(), "decline"));
+			}
+		} else if(message.equals("accept")) {
+			//otherAgain=true;
+			model.setCurrentPlayer(model.getThisPlayer());
+			gameObservers.forEach(gameObserver -> gameObserver.restartGame());
+		} else if(message.equals("denied")){
+			gameObservers.forEach(gameObserver -> gameObserver.sendChat("Player " + player + " does not want to restart :C"));
+		} else if(message.equals("playAgain")){
+			otherAgain = true;
 		}
 	}
 
-
-
-	@Override
-	public void restartIncoming(int player, String message) {
-		// TODO Auto-generated method stub
-
-	}
-
-
+	/**
+	 * Implemented function for start game incoming
+	 * @param player p
+	 * @param message m
+	 */
 	@Override
 	public void startGameIncoming(int player, String message) {
 		if(!playerSet) {
-			System.out.println("Setting player number");
 			if(player == 1) {
 				model.setThisPlayer(2);
 			} else if(player == 2) {
 				model.setThisPlayer(1);
 			}
 		}
-		System.out.println("Inside start game incoming in game board controller");
 		if(message.equals("request")) {
-			System.out.println("request start");
 			if(view.startGamePromptOther()) {
 				if(model.getThisPlayer()==1) {
 					model.setCurrentPlayer(2);
 				} else {
 					model.setCurrentPlayer(1);
 				}
-				System.out.println("Current player: " + model.getCurrentPlayer());
-				System.out.println("This player: " + model.getThisPlayer());
-				outgoing.forEach(out -> out.startGameOutgoing("sg", model.getThisPlayer(), "accept"));
+				outgoingObservers.forEach(outgoingObserver -> outgoingObserver.startGameOutgoing("sg", model.getThisPlayer(), "accept"));
 				waiting=false;
 				notifyGameStart();
 			}
 		} else if(message.equals("accept")) {
-			System.out.println("accept start");
 			if(model.getThisPlayer()==1) {
 				model.setCurrentPlayer(1);
 			} else {
@@ -260,25 +325,30 @@ public class GameBoardController implements MenuObserver, IncomingObserver, Conn
 			}
 			waiting=false;
 			model.setHasStarted(true);
+			model.setHasStarted(true);
 			notifyGameStart();
 		}		
 	}
 
+	/**
+	 * Implemented function for active connection
+	 * @param c c
+	 */
 	@Override
 	public void connected(int c) {
 		remote = true;
 	}
 
+	/**
+	 * Implemented function for disconnect from client/server
+	 * @param c c
+	 */
 	@Override
 	public void disconnected(int c) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void changeLanguage(String language) {
-		// TODO Auto-generated method stub
-		
+		model.setAbleToPlace(false);
+		model.resetGrid();
+		view.resetGameBoard();
+		remote = false;
 	}
 
 }
